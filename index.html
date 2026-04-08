@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>小工具集合</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+        .container {
+            background-color: white;
+            padding: 40px;
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            max-width: 800px;
+            width: 100%;
+            text-align: center;
+            backdrop-filter: blur(10px);
+        }
+        h1 {
+            color: #333;
+            margin-bottom: 30px;
+            font-size: 32px;
+            font-weight: 600;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .tools-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 25px;
+            margin-top: 30px;
+        }
+        .tool-card {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            padding: 35px 25px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+        .tool-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+            border-color: #667eea;
+        }
+        .tool-card h2 {
+            font-size: 20px;
+            color: #333;
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+        .tool-card p {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 20px;
+            line-height: 1.5;
+        }
+        .tool-card a {
+            display: inline-block;
+            padding: 12px 24px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+        }
+        .tool-card a:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(102, 126, 234, 0.4);
+        }
+        .footer {
+            margin-top: 40px;
+            font-size: 14px;
+            color: #999;
+            padding-top: 20px;
+            border-top: 1px solid #e0e0e0;
+        }
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+            }
+            .tools-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>小工具集合</h1>
+        <p>选择以下工具开始使用</p>
+        
+        <div class="tools-grid">
+            <div class="tool-card">
+                <h2>时间戳转化工具</h2>
+                <p>将时间戳转化为年月日时分，或将年月日时分转化为时间戳</p>
+                <a href="timestamp-converter.html">使用工具</a>
+            </div>
+            
+            <div class="tool-card">
+                <h2>单位换算小工具</h2>
+                <p>提供长度、质量、功率、热量、速度等常用单位之间的换算</p>
+                <a href="unit-converter.html">使用工具</a>
+            </div>
+            
+            <div class="tool-card">
+                <h2>工作时间轴</h2>
+                <p>以进度条方式展示工作时间，实时显示当前时间位置和状态</p>
+                <a href="work-timeline.html">使用工具</a>
+            </div>
+            
+            <div class="tool-card">
+                <h2>扫雷游戏</h2>
+                <p>经典扫雷游戏，支持多种难度级别，挑战你的逻辑思维和反应能力</p>
+                <a href="minesweeper.html">使用工具</a>
+            </div>
+            
+            <div class="tool-card">
+                <h2>数独游戏</h2>
+                <p>9×9标准数独游戏，支持多种难度，挑战你的逻辑推理能力</p>
+                <a href="sudoku.html">使用工具</a>
+            </div>
+        </div>
+        
+        <div class="footer">
+            <p>© 小工具集合</p>
+        </div>
+    </div>
+</body>
+</html>

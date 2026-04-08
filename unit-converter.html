@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>单位换算小工具</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+        .container {
+            background-color: white;
+            padding: 40px;
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            max-width: 600px;
+            width: 100%;
+            backdrop-filter: blur(10px);
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 30px;
+            font-weight: 600;
+            font-size: 28px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .section {
+            margin-bottom: 30px;
+            padding: 20px;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        }
+        h2 {
+            font-size: 18px;
+            color: #666;
+            margin-bottom: 15px;
+            font-weight: 500;
+        }
+        .unit-type-selector {
+            margin-bottom: 20px;
+        }
+        .unit-type-selector select {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+        .unit-type-selector select:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+        .conversion-section {
+            display: flex;
+            gap: 20px;
+            align-items: flex-start;
+        }
+        .input-group {
+            flex: 1;
+        }
+        input[type="number"] {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+        input[type="number"]:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+        select {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+        select:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+        .result {
+            margin-top: 20px;
+            padding: 20px;
+            background-color: white;
+            border-radius: 8px;
+            border: 2px solid #e0e0e0;
+            word-wrap: break-word;
+        }
+        .result h3 {
+            font-size: 16px;
+            color: #666;
+            margin-bottom: 10px;
+            font-weight: 500;
+        }
+        .result-value {
+            font-size: 20px;
+            font-weight: 600;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .back-link {
+            display: block;
+            text-align: center;
+            margin-top: 30px;
+            color: #667eea;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+            padding: 10px 20px;
+            border: 2px solid #667eea;
+            border-radius: 25px;
+            transition: all 0.3s ease;
+        }
+        .back-link:hover {
+            background-color: #667eea;
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+        }
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+            }
+            .conversion-section {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>单位换算小工具</h1>
+        
+        <div class="section">
+            <h2>选择单位类型</h2>
+            <div class="unit-type-selector">
+                <select id="unitType" onchange="updateUnitOptions()">
+                    <option value="length">长度</option>
+                    <option value="mass">质量</option>
+                    <option value="power">功率</option>
+                    <option value="energy">热量</option>
+                    <option value="speed">速度</option>
+                </select>
+            </div>
+        </div>
+        
+        <div class="section">
+            <h2>换算设置</h2>
+            <div class="conversion-section">
+                <div class="input-group">
+                    <input type="number" id="inputValue" placeholder="输入数值" oninput="convertUnits()">
+                    <select id="fromUnit" onchange="convertUnits()"></select>
+                </div>
+                <div class="input-group">
+                    <input type="number" id="outputValue" readonly>
+                    <select id="toUnit" onchange="convertUnits()"></select>
+                </div>
+            </div>
+        </div>
+        
+        <div class="section">
+            <div class="result">
+                <h3>换算结果</h3>
+                <div class="result-value" id="resultText"></div>
+            </div>
+        </div>
+        
+        <a href="index.html" class="back-link">返回主页</a>
+    </div>
+    
+    <script>
+        // 单位定义
+        const unitDefinitions = {
+            length: {
+                units: ['米 (m)', '千米 (km)', '厘米 (cm)', '毫米 (mm)', '英寸 (in)', '英尺 (ft)', '英里 (mi)'],
+                conversions: {
+                    '米 (m)': 1,
+                    '千米 (km)': 0.001,
+                    '厘米 (cm)': 100,
+                    '毫米 (mm)': 1000,
+                    '英寸 (in)': 39.3701,
+                    '英尺 (ft)': 3.28084,
+                    '英里 (mi)': 0.000621371
+                }
+            },
+            mass: {
+                units: ['千克 (kg)', '克 (g)', '毫克 (mg)', '吨 (t)', '磅 (lb)', '盎司 (oz)'],
+                conversions: {
+                    '千克 (kg)': 1,
+                    '克 (g)': 1000,
+                    '毫克 (mg)': 1000000,
+                    '吨 (t)': 0.001,
+                    '磅 (lb)': 2.20462,
+                    '盎司 (oz)': 35.274
+                }
+            },
+            power: {
+                units: ['瓦特 (W)', '千瓦 (kW)', '马力 (hp)', '焦耳/秒 (J/s)'],
+                conversions: {
+                    '瓦特 (W)': 1,
+                    '千瓦 (kW)': 0.001,
+                    '马力 (hp)': 0.00134102,
+                    '焦耳/秒 (J/s)': 1
+                }
+            },
+            energy: {
+                units: ['焦耳 (J)', '千焦耳 (kJ)', '卡路里 (cal)', '大卡 (kcal)', '千瓦时 (kWh)'],
+                conversions: {
+                    '焦耳 (J)': 1,
+                    '千焦耳 (kJ)': 0.001,
+                    '卡路里 (cal)': 0.239006,
+                    '大卡 (kcal)': 0.000239006,
+                    '千瓦时 (kWh)': 2.77778e-7
+                }
+            },
+            speed: {
+                units: ['米/秒 (m/s)', '千米/小时 (km/h)', '英里/小时 (mph)', '节 (kn)'],
+                conversions: {
+                    '米/秒 (m/s)': 1,
+                    '千米/小时 (km/h)': 3.6,
+                    '英里/小时 (mph)': 2.23694,
+                    '节 (kn)': 1.94384
+                }
+            }
+        };
+        
+        // 更新单位选项
+        function updateUnitOptions() {
+            const unitType = document.getElementById('unitType').value;
+            const fromUnitSelect = document.getElementById('fromUnit');
+            const toUnitSelect = document.getElementById('toUnit');
+            const units = unitDefinitions[unitType].units;
+            
+            // 清空现有选项
+            fromUnitSelect.innerHTML = '';
+            toUnitSelect.innerHTML = '';
+            
+            // 添加新选项
+            units.forEach(unit => {
+                const fromOption = document.createElement('option');
+                fromOption.value = unit;
+                fromOption.textContent = unit;
+                fromUnitSelect.appendChild(fromOption);
+                
+                const toOption = document.createElement('option');
+                toOption.value = unit;
+                toOption.textContent = unit;
+                toUnitSelect.appendChild(toOption);
+            });
+            
+            // 默认选择不同的单位
+            if (units.length > 1) {
+                toUnitSelect.selectedIndex = 1;
+            }
+            
+            // 触发换算
+            convertUnits();
+        }
+        
+        // 单位换算
+        function convertUnits() {
+            const unitType = document.getElementById('unitType').value;
+            const inputValue = parseFloat(document.getElementById('inputValue').value) || 0;
+            const fromUnit = document.getElementById('fromUnit').value;
+            const toUnit = document.getElementById('toUnit').value;
+            const conversions = unitDefinitions[unitType].conversions;
+            
+            // 先转换为基准单位（第一个单位），再转换为目标单位
+            const baseValue = inputValue / conversions[fromUnit];
+            const outputValue = baseValue * conversions[toUnit];
+            
+            // 更新输出
+            document.getElementById('outputValue').value = outputValue.toFixed(6);
+            document.getElementById('resultText').textContent = `${inputValue} ${fromUnit} = ${outputValue.toFixed(6)} ${toUnit}`;
+        }
+        
+        // 初始化
+        window.onload = function() {
+            updateUnitOptions();
+        };
+    </script>
+</body>
+</html>
