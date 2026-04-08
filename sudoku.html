@@ -704,26 +704,25 @@
                     if (!isComplete) break;
                 }
                 
-                // 检查是否有错误
+                // 检查是否有错误（与解决方案比较）
                 let hasError = false;
+                let correctCount = 0;
+                let filledCount = 0;
+                
                 for (let i = 0; i < 9; i++) {
                     for (let j = 0; j < 9; j++) {
-                        if (this.initialBoard[i][j] === 0 && this.board[i][j] !== 0) {
-                            // 临时保存当前值
-                            const currentValue = this.board[i][j];
-                            // 临时清空当前单元格
-                            this.board[i][j] = 0;
-                            // 检查是否重复
-                            if (!this.isValid(this.board, i, j, currentValue)) {
+                        if (this.board[i][j] !== 0) {
+                            filledCount++;
+                            if (this.board[i][j] === this.solution[i][j]) {
+                                correctCount++;
+                            } else {
                                 hasError = true;
+                                // 标记错误单元格
+                                const index = i * 9 + j;
+                                document.querySelectorAll('.cell')[index].classList.add('error');
                             }
-                            // 恢复当前值
-                            this.board[i][j] = currentValue;
-                            
-                            if (hasError) break;
                         }
                     }
-                    if (hasError) break;
                 }
                 
                 // 显示检查结果
@@ -732,7 +731,7 @@
                     this.checkWin();
                 } else if (hasError) {
                     message.className = 'game-message lose';
-                    message.textContent = '⚠️ 存在错误，请检查';
+                    message.textContent = `⚠️ 存在错误，${correctCount}/${filledCount} 个数字正确`;
                     // 3秒后清除消息
                     setTimeout(() => {
                         message.className = 'game-message';
@@ -740,7 +739,7 @@
                     }, 3000);
                 } else {
                     message.className = 'game-message win';
-                    message.textContent = '✅ 目前没有错误，请继续';
+                    message.textContent = `✅ 目前没有错误，${filledCount} 个数字正确`;
                     // 3秒后清除消息
                     setTimeout(() => {
                         message.className = 'game-message';
