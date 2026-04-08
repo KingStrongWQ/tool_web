@@ -1,0 +1,669 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>消消乐</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #333;
+        }
+        
+        .container {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+            text-align: center;
+            max-width: 500px;
+            width: 100%;
+        }
+        
+        h1 {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-size: 2.5em;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        
+        .game-info {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            padding: 15px;
+            background: rgba(102, 126, 234, 0.1);
+            border-radius: 10px;
+        }
+        
+        .score, .time, .moves {
+            font-size: 1.2em;
+            font-weight: 600;
+            color: #667eea;
+        }
+        
+        .game-board {
+            display: grid;
+            grid-template-columns: repeat(8, 1fr);
+            grid-template-rows: repeat(8, 1fr);
+            gap: 5px;
+            background: #e0e0e0;
+            padding: 10px;
+            border-radius: 10px;
+            margin: 20px 0;
+        }
+        
+        .cell {
+            aspect-ratio: 1;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: box-shadow 0.3s ease, background 0.3s ease, border 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2em;
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+            box-sizing: border-box;
+            border: 3px solid transparent;
+        }
+        
+        .cell:hover {
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        
+        .cell.selected {
+            border-color: #667eea;
+        }
+        
+        .cell.target {
+            border-style: dashed;
+            border-color: #764ba2;
+            background: rgba(118, 75, 162, 0.2);
+        }
+        
+        .cell.red { background: rgba(244, 67, 54, 0.2); color: #f44336; }
+        .cell.blue { background: rgba(33, 150, 243, 0.2); color: #2196f3; }
+        .cell.green { background: rgba(76, 175, 80, 0.2); color: #4caf50; }
+        .cell.yellow { background: rgba(255, 235, 59, 0.2); color: #ffeb3b; }
+        .cell.purple { background: rgba(156, 39, 176, 0.2); color: #9c27b0; }
+        .cell.orange { background: rgba(255, 152, 0, 0.2); color: #ff9800; }
+        
+        .game-controls {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin-top: 20px;
+        }
+        
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 1em;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        
+        .btn-secondary {
+            background: #f5f5f5;
+            color: #333;
+            border: 1px solid #ddd;
+        }
+        
+        .game-message {
+            margin: 20px 0;
+            padding: 15px;
+            border-radius: 10px;
+            font-size: 1.2em;
+            font-weight: 600;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        
+        .game-message.show {
+            opacity: 1;
+        }
+        
+        .game-message.win {
+            background: rgba(76, 175, 80, 0.2);
+            color: #4caf50;
+        }
+        
+        .game-message.lose {
+            background: rgba(244, 67, 54, 0.2);
+            color: #f44336;
+        }
+        
+        .back-link {
+            display: block;
+            text-align: center;
+            margin-top: 30px;
+            color: #667eea;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+            padding: 10px 20px;
+            border: 2px solid #667eea;
+            border-radius: 25px;
+            transition: all 0.3s ease;
+        }
+        
+        .back-link:hover {
+            background-color: #667eea;
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+        }
+        
+        @media (max-width: 480px) {
+            .container {
+                padding: 20px;
+            }
+            
+            h1 {
+                font-size: 2em;
+            }
+            
+            .game-board {
+                gap: 3px;
+                padding: 5px;
+            }
+            
+            .cell {
+                font-size: 1.5em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>消消乐</h1>
+        
+        <div class="game-info">
+            <div class="score">得分: <span id="score">0</span></div>
+            <div class="time">时间: <span id="time">60</span>s</div>
+            <div class="moves">步数: <span id="moves">0</span></div>
+        </div>
+        
+        <div class="game-board" id="game-board"></div>
+        
+        <div class="game-message" id="game-message"></div>
+        
+        <div class="game-controls">
+            <button class="btn btn-primary" id="restart-btn">重新开始</button>
+            <button class="btn btn-secondary" id="hint-btn">提示</button>
+        </div>
+        
+        <a href="index.html" class="back-link">返回主页</a>
+    </div>
+    
+    <script>
+        class MatchThree {
+            constructor() {
+                this.board = [];
+                this.size = 8;
+                this.colors = ['red', 'blue', 'green', 'yellow', 'purple', 'orange'];
+                this.selectedCell = null;
+                this.score = 0;
+                this.time = 60;
+                this.moves = 0;
+                this.gameStarted = false;
+                this.gameOver = false;
+                this.timerInterval = null;
+                
+                this.init();
+            }
+            
+            init() {
+                this.createBoard();
+                this.renderBoard();
+                this.bindEvents();
+            }
+            
+            createBoard() {
+                this.board = Array(this.size).fill().map(() => 
+                    Array(this.size).fill().map(() => 
+                        this.colors[Math.floor(Math.random() * this.colors.length)]
+                    )
+                );
+                
+                // 确保初始板没有可消除的组合
+                while (this.findMatches().length > 0) {
+                    this.board = Array(this.size).fill().map(() => 
+                        Array(this.size).fill().map(() => 
+                            this.colors[Math.floor(Math.random() * this.colors.length)]
+                        )
+                    );
+                }
+            }
+            
+            renderBoard() {
+                const boardElement = document.getElementById('game-board');
+                boardElement.innerHTML = '';
+                
+                for (let i = 0; i < this.size; i++) {
+                    for (let j = 0; j < this.size; j++) {
+                        const cellElement = document.createElement('div');
+                        cellElement.className = `cell ${this.board[i][j]}`;
+                        cellElement.dataset.row = i;
+                        cellElement.dataset.col = j;
+                        
+                        // 添加表情符号
+                        const emoji = this.getEmojiForColor(this.board[i][j]);
+                        cellElement.textContent = emoji;
+                        
+                        // 添加拖拽事件监听器
+                        cellElement.addEventListener('mousedown', (e) => this.startDrag(e, i, j));
+                        cellElement.addEventListener('touchstart', (e) => this.startDrag(e, i, j));
+                        boardElement.appendChild(cellElement);
+                    }
+                }
+                
+                // 更新分数和步数
+                document.getElementById('score').textContent = this.score;
+                document.getElementById('moves').textContent = this.moves;
+            }
+            
+            startDrag(e, row, col) {
+                if (this.gameOver) return;
+                
+                // 开始游戏
+                if (!this.gameStarted) {
+                    this.startGame();
+                }
+                
+                e.preventDefault();
+                this.selectedCell = { row, col };
+                
+                const cellElement = document.querySelector(`[data-row="${row}"][data-col="${col}"]`);
+                cellElement.classList.add('selected');
+                
+                // 添加移动和结束事件监听器
+                document.addEventListener('mousemove', this.onDrag.bind(this));
+                document.addEventListener('touchmove', this.onDrag.bind(this));
+                document.addEventListener('mouseup', this.endDrag.bind(this));
+                document.addEventListener('touchend', this.endDrag.bind(this));
+            }
+            
+            onDrag(e) {
+                if (!this.selectedCell) return;
+                
+                e.preventDefault();
+                
+                // 获取鼠标/触摸位置
+                const clientX = e.clientX || e.touches[0].clientX;
+                const clientY = e.clientY || e.touches[0].clientY;
+                
+                // 找到鼠标下的单元格
+                const element = document.elementFromPoint(clientX, clientY);
+                if (element && element.classList.contains('cell')) {
+                    const row = parseInt(element.dataset.row);
+                    const col = parseInt(element.dataset.col);
+                    
+                    // 检查是否相邻
+                    if (this.isAdjacent(this.selectedCell, { row, col })) {
+                        // 高亮目标单元格
+                        document.querySelectorAll('.cell').forEach(cell => {
+                            if (!cell.classList.contains('selected')) {
+                                cell.classList.remove('target');
+                            }
+                        });
+                        element.classList.add('target');
+                    }
+                }
+            }
+            
+            endDrag(e) {
+                if (!this.selectedCell) return;
+                
+                // 获取鼠标/触摸位置
+                const clientX = e.clientX || (e.changedTouches && e.changedTouches[0].clientX);
+                const clientY = e.clientY || (e.changedTouches && e.changedTouches[0].clientY);
+                
+                // 找到鼠标下的单元格
+                if (clientX && clientY) {
+                    const element = document.elementFromPoint(clientX, clientY);
+                    if (element && element.classList.contains('cell') && element.classList.contains('target')) {
+                        const row = parseInt(element.dataset.row);
+                        const col = parseInt(element.dataset.col);
+                        
+                        // 交换位置
+                        this.swapCells(this.selectedCell, { row, col });
+                        this.moves++;
+                    }
+                }
+                
+                // 清理
+                document.querySelectorAll('.cell').forEach(cell => {
+                    cell.classList.remove('selected', 'target');
+                });
+                this.selectedCell = null;
+                
+                // 移除事件监听器
+                document.removeEventListener('mousemove', this.onDrag.bind(this));
+                document.removeEventListener('touchmove', this.onDrag.bind(this));
+                document.removeEventListener('mouseup', this.endDrag.bind(this));
+                document.removeEventListener('touchend', this.endDrag.bind(this));
+            }
+            
+            getEmojiForColor(color) {
+                const emojiMap = {
+                    'red': '🔴',
+                    'blue': '🔵',
+                    'green': '🟢',
+                    'yellow': '🟡',
+                    'purple': '🟣',
+                    'orange': '🟠'
+                };
+                return emojiMap[color] || '❓';
+            }
+            
+            bindEvents() {
+                document.getElementById('restart-btn').addEventListener('click', () => this.restart());
+                document.getElementById('hint-btn').addEventListener('click', () => this.hint());
+            }
+            
+
+            
+            isAdjacent(cell1, cell2) {
+                const rowDiff = Math.abs(cell1.row - cell2.row);
+                const colDiff = Math.abs(cell1.col - cell2.col);
+                return (rowDiff === 1 && colDiff === 0) || (rowDiff === 0 && colDiff === 1);
+            }
+            
+            swapCells(cell1, cell2) {
+                // 交换颜色
+                const temp = this.board[cell1.row][cell1.col];
+                this.board[cell1.row][cell1.col] = this.board[cell2.row][cell2.col];
+                this.board[cell2.row][cell2.col] = temp;
+                
+                this.renderBoard();
+                
+                // 检查匹配
+                setTimeout(() => {
+                    const matches = this.findMatches();
+                    if (matches.length > 0) {
+                        this.removeMatches(matches);
+                    } else {
+                        // 没有匹配，交换回来
+                        const temp = this.board[cell1.row][cell1.col];
+                        this.board[cell1.row][cell1.col] = this.board[cell2.row][cell2.col];
+                        this.board[cell2.row][cell2.col] = temp;
+                        this.renderBoard();
+                    }
+                }, 300);
+            }
+            
+            findMatches() {
+                const matches = [];
+                
+                // 检查水平匹配
+                for (let i = 0; i < this.size; i++) {
+                    let currentColor = this.board[i][0];
+                    let count = 1;
+                    
+                    for (let j = 1; j < this.size; j++) {
+                        if (this.board[i][j] === currentColor) {
+                            count++;
+                        } else {
+                            if (count >= 3) {
+                                for (let k = j - count; k < j; k++) {
+                                    matches.push({ row: i, col: k });
+                                }
+                            }
+                            currentColor = this.board[i][j];
+                            count = 1;
+                        }
+                    }
+                    
+                    if (count >= 3) {
+                        for (let k = this.size - count; k < this.size; k++) {
+                            matches.push({ row: i, col: k });
+                        }
+                    }
+                }
+                
+                // 检查垂直匹配
+                for (let j = 0; j < this.size; j++) {
+                    let currentColor = this.board[0][j];
+                    let count = 1;
+                    
+                    for (let i = 1; i < this.size; i++) {
+                        if (this.board[i][j] === currentColor) {
+                            count++;
+                        } else {
+                            if (count >= 3) {
+                                for (let k = i - count; k < i; k++) {
+                                    matches.push({ row: k, col: j });
+                                }
+                            }
+                            currentColor = this.board[i][j];
+                            count = 1;
+                        }
+                    }
+                    
+                    if (count >= 3) {
+                        for (let k = this.size - count; k < this.size; k++) {
+                            matches.push({ row: k, col: j });
+                        }
+                    }
+                }
+                
+                return matches;
+            }
+            
+            removeMatches(matches) {
+                // 标记要删除的单元格
+                const toRemove = Array(this.size).fill().map(() => Array(this.size).fill(false));
+                matches.forEach(match => {
+                    toRemove[match.row][match.col] = true;
+                });
+                
+                // 计算得分
+                this.score += matches.length * 10;
+                
+                // 移除匹配的单元格
+                for (let i = 0; i < this.size; i++) {
+                    for (let j = 0; j < this.size; j++) {
+                        if (toRemove[i][j]) {
+                            this.board[i][j] = null;
+                        }
+                    }
+                }
+                
+                this.renderBoard();
+                
+                // 下落
+                setTimeout(() => {
+                    this.dropCells();
+                }, 500);
+            }
+            
+            dropCells() {
+                // 下落单元格
+                for (let j = 0; j < this.size; j++) {
+                    let emptyCount = 0;
+                    
+                    for (let i = this.size - 1; i >= 0; i--) {
+                        if (this.board[i][j] === null) {
+                            emptyCount++;
+                        } else if (emptyCount > 0) {
+                            this.board[i + emptyCount][j] = this.board[i][j];
+                            this.board[i][j] = null;
+                        }
+                    }
+                    
+                    // 填充新单元格
+                    for (let i = 0; i < emptyCount; i++) {
+                        this.board[i][j] = this.colors[Math.floor(Math.random() * this.colors.length)];
+                    }
+                }
+                
+                this.renderBoard();
+                
+                // 检查新的匹配
+                setTimeout(() => {
+                    const newMatches = this.findMatches();
+                    if (newMatches.length > 0) {
+                        this.removeMatches(newMatches);
+                    }
+                }, 300);
+            }
+            
+            startGame() {
+                this.gameStarted = true;
+                this.timerInterval = setInterval(() => {
+                    this.time--;
+                    document.getElementById('time').textContent = this.time;
+                    
+                    if (this.time <= 0) {
+                        this.endGame(false);
+                    }
+                }, 1000);
+            }
+            
+            endGame(isWin) {
+                this.gameOver = true;
+                clearInterval(this.timerInterval);
+                
+                const message = document.getElementById('game-message');
+                message.className = `game-message show ${isWin ? 'win' : 'lose'}`;
+                message.textContent = isWin ? `🎉 恭喜你赢了！得分: ${this.score}` : `⏰ 时间到！得分: ${this.score}`;
+            }
+            
+            restart() {
+                clearInterval(this.timerInterval);
+                this.score = 0;
+                this.time = 60;
+                this.moves = 0;
+                this.gameStarted = false;
+                this.gameOver = false;
+                this.selectedCell = null;
+                
+                document.getElementById('time').textContent = this.time;
+                document.getElementById('game-message').className = 'game-message';
+                document.getElementById('game-message').textContent = '';
+                
+                this.createBoard();
+                this.renderBoard();
+            }
+            
+            hint() {
+                // 寻找可交换的单元格
+                for (let i = 0; i < this.size; i++) {
+                    for (let j = 0; j < this.size; j++) {
+                        // 尝试向右交换
+                        if (j < this.size - 1) {
+                            // 交换
+                            const temp = this.board[i][j];
+                            this.board[i][j] = this.board[i][j + 1];
+                            this.board[i][j + 1] = temp;
+                            
+                            // 检查匹配
+                            if (this.findMatches().length > 0) {
+                                // 交换回来
+                                const temp2 = this.board[i][j];
+                                this.board[i][j] = this.board[i][j + 1];
+                                this.board[i][j + 1] = temp2;
+                                
+                                // 高亮提示
+                                const cell1 = document.querySelector(`[data-row="${i}"][data-col="${j}"]`);
+                                const cell2 = document.querySelector(`[data-row="${i}"][data-col="${j + 1}"]`);
+                                
+                                cell1.style.boxShadow = '0 0 10px #667eea';
+                                cell2.style.boxShadow = '0 0 10px #667eea';
+                                
+                                setTimeout(() => {
+                                    cell1.style.boxShadow = '';
+                                    cell2.style.boxShadow = '';
+                                }, 2000);
+                                
+                                return;
+                            }
+                            
+                            // 交换回来
+                            const temp2 = this.board[i][j];
+                            this.board[i][j] = this.board[i][j + 1];
+                            this.board[i][j + 1] = temp2;
+                        }
+                        
+                        // 尝试向下交换
+                        if (i < this.size - 1) {
+                            // 交换
+                            const temp = this.board[i][j];
+                            this.board[i][j] = this.board[i + 1][j];
+                            this.board[i + 1][j] = temp;
+                            
+                            // 检查匹配
+                            if (this.findMatches().length > 0) {
+                                // 交换回来
+                                const temp2 = this.board[i][j];
+                                this.board[i][j] = this.board[i + 1][j];
+                                this.board[i + 1][j] = temp2;
+                                
+                                // 高亮提示
+                                const cell1 = document.querySelector(`[data-row="${i}"][data-col="${j}"]`);
+                                const cell2 = document.querySelector(`[data-row="${i + 1}"][data-col="${j}"]`);
+                                
+                                cell1.style.boxShadow = '0 0 10px #667eea';
+                                cell2.style.boxShadow = '0 0 10px #667eea';
+                                
+                                setTimeout(() => {
+                                    cell1.style.boxShadow = '';
+                                    cell2.style.boxShadow = '';
+                                }, 2000);
+                                
+                                return;
+                            }
+                            
+                            // 交换回来
+                            const temp2 = this.board[i][j];
+                            this.board[i][j] = this.board[i + 1][j];
+                            this.board[i + 1][j] = temp2;
+                        }
+                    }
+                }
+                
+                // 没有找到可交换的
+                const message = document.getElementById('game-message');
+                message.className = 'game-message show lose';
+                message.textContent = '😕 没有找到可交换的组合';
+                
+                setTimeout(() => {
+                    message.className = 'game-message';
+                    message.textContent = '';
+                }, 2000);
+            }
+        }
+        
+        // 初始化游戏
+        const game = new MatchThree();
+    </script>
+</body>
+</html>
