@@ -218,6 +218,7 @@
         <div class="game-controls">
             <button class="btn btn-primary" id="restart-btn">重新开始</button>
             <button class="btn btn-secondary" id="hint-btn">提示</button>
+            <button class="btn btn-warning" id="pause-btn">暂停</button>
         </div>
         
         <a href="index.html" class="back-link">返回主页</a>
@@ -235,6 +236,7 @@
                 this.moves = 0;
                 this.gameStarted = false;
                 this.gameOver = false;
+                this.paused = false;
                 this.timerInterval = null;
                 
                 this.init();
@@ -291,7 +293,7 @@
             }
             
             startDrag(e, row, col) {
-                if (this.gameOver) return;
+                if (this.gameOver || this.paused) return;
                 
                 // 开始游戏
                 if (!this.gameStarted) {
@@ -387,6 +389,37 @@
             bindEvents() {
                 document.getElementById('restart-btn').addEventListener('click', () => this.restart());
                 document.getElementById('hint-btn').addEventListener('click', () => this.hint());
+                document.getElementById('pause-btn').addEventListener('click', () => this.togglePause());
+            }
+            
+            togglePause() {
+                this.paused = !this.paused;
+                const pauseBtn = document.getElementById('pause-btn');
+                
+                if (this.paused) {
+                    pauseBtn.textContent = '继续';
+                    clearInterval(this.timerInterval);
+                    document.getElementById('game-message').textContent = '游戏已暂停';
+                } else {
+                    pauseBtn.textContent = '暂停';
+                    if (this.gameStarted && !this.gameOver) {
+                        this.startTimer();
+                    }
+                    document.getElementById('game-message').textContent = '';
+                }
+            }
+            
+            startTimer() {
+                this.timerInterval = setInterval(() => {
+                    if (!this.paused) {
+                        this.time--;
+                        document.getElementById('time').textContent = this.time;
+                        
+                        if (this.time <= 0) {
+                            this.endGame();
+                        }
+                    }
+                }, 1000);
             }
             
 
@@ -538,18 +571,14 @@
             
             startGame() {
                 this.gameStarted = true;
-                this.timerInterval = setInterval(() => {
-                    this.time--;
-                    document.getElementById('time').textContent = this.time;
-                    
-                    if (this.time <= 0) {
-                        this.endGame(false);
-                    }
-                }, 1000);
+                this.paused = false;
+                document.getElementById('pause-btn').textContent = '暂停';
+                this.startTimer();
             }
             
             endGame(isWin) {
                 this.gameOver = true;
+                this.paused = false;
                 clearInterval(this.timerInterval);
                 
                 const message = document.getElementById('game-message');
@@ -564,9 +593,11 @@
                 this.moves = 0;
                 this.gameStarted = false;
                 this.gameOver = false;
+                this.paused = false;
                 this.selectedCell = null;
                 
                 document.getElementById('time').textContent = this.time;
+                document.getElementById('pause-btn').textContent = '暂停';
                 document.getElementById('game-message').className = 'game-message';
                 document.getElementById('game-message').textContent = '';
                 
