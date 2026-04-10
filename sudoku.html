@@ -48,6 +48,27 @@
             border-radius: 12px;
             box-shadow: 0 4px 12px rgba(0,0,0,0.05);
         }
+        .pause-button {
+            padding: 8px 16px;
+            border-radius: 20px;
+            border: none;
+            color: white;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: #f44336 !important;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+        }
+        .pause-button:hover {
+            transform: scale(1.05);
+        }
+        .pause-button.paused {
+            background: #4caf50 !important;
+        }
         .info-item {
             display: flex;
             align-items: center;
@@ -145,6 +166,9 @@
         }
         .cell.error {
             color: #f44336;
+        }
+        .cell.marked {
+            background-color: #fff3cd;
         }
         .cell.correct {
             color: #2e7d32;
@@ -256,6 +280,7 @@
             <div class="info-item">
                 难度: <span id="difficulty-display">简单</span>
             </div>
+            <button id="pause" class="pause-button">暂停</button>
             <div class="info-item">
                 用时: <span id="timer">0</span>秒
             </div>
@@ -272,7 +297,7 @@
             <button id="clear">清空</button>
             <button id="hint">提示</button>
             <button id="check">检查</button>
-            <button id="pause">暂停</button>
+            <button id="mark">标注存疑</button>
         </div>
         
         <div class="sudoku-board" id="sudoku-board"></div>
@@ -303,6 +328,7 @@
                 this.solution = Array(9).fill().map(() => Array(9).fill(0));
                 this.userBoard = Array(9).fill().map(() => Array(9).fill(0));
                 this.initialBoard = Array(9).fill().map(() => Array(9).fill(0));
+                this.markedCells = Array(9).fill().map(() => Array(9).fill(false));
                 this.history = [];
                 this.selectedCell = null;
                 this.gameStarted = false;
@@ -336,6 +362,7 @@
                 document.getElementById('hint').addEventListener('click', () => this.hint());
                 document.getElementById('check').addEventListener('click', () => this.check());
                 document.getElementById('pause').addEventListener('click', () => this.togglePause());
+                document.getElementById('mark').addEventListener('click', () => this.markCell());
                 
                 // 数字键盘
                 document.querySelectorAll('.number-button').forEach(button => {
@@ -366,6 +393,7 @@
                 
                 if (this.paused) {
                     pauseBtn.textContent = '继续';
+                    pauseBtn.classList.add('paused');
                     if (this.timerInterval) {
                         clearInterval(this.timerInterval);
                         this.timerInterval = null;
@@ -373,6 +401,7 @@
                     document.getElementById('game-message').textContent = '游戏已暂停';
                 } else {
                     pauseBtn.textContent = '暂停';
+                    pauseBtn.classList.remove('paused');
                     if (this.gameStarted && !this.gameOver) {
                         this.startTimer();
                     }
@@ -396,11 +425,14 @@
                 this.gameStarted = false;
                 this.gameOver = false;
                 this.paused = false;
+                this.markedCells = Array(9).fill().map(() => Array(9).fill(false));
                 this.timeElapsed = 0;
                 
                 // 重置UI
                 document.getElementById('timer').textContent = '0';
-                document.getElementById('pause').textContent = '暂停';
+                const pauseBtn = document.getElementById('pause');
+                pauseBtn.textContent = '暂停';
+                pauseBtn.classList.remove('paused');
                 document.getElementById('game-message').className = 'game-message';
                 document.getElementById('game-message').textContent = '';
                 
@@ -434,12 +466,38 @@
                     cellsToRemove = 65;
                 }
                 
-                while (cellsToRemove > 0) {
-                    const row = Math.floor(Math.random() * 9);
-                    const col = Math.floor(Math.random() * 9);
+                // 创建一个单元格列表用于随机移除
+                const cells = [];
+                for (let i = 0; i < 9; i++) {
+                    for (let j = 0; j < 9; j++) {
+                        cells.push({ row: i, col: j });
+                    }
+                }
+                
+                // 随机打乱单元格顺序
+                this.shuffleArray(cells);
+                
+                let index = 0;
+                while (cellsToRemove > 0 && index < cells.length) {
+                    const { row, col } = cells[index];
+                    index++;
+                    
                     if (this.userBoard[row][col] !== 0) {
+                        // 保存原始值
+                        const originalValue = this.userBoard[row][col];
+                        // 尝试移除
                         this.userBoard[row][col] = 0;
-                        cellsToRemove--;
+                        
+                        // 检查解的数量
+                        const solutionCount = this.countSolutions(this.userBoard);
+                        
+                        if (solutionCount === 1) {
+                            // 保持移除
+                            cellsToRemove--;
+                        } else {
+                            // 恢复原始值
+                            this.userBoard[row][col] = originalValue;
+                        }
                     }
                 }
                 
@@ -477,6 +535,37 @@
                     }
                 }
                 return true;
+            }
+            
+            countSolutions(board) {
+                // 计算数独的解的数量
+                let count = 0;
+                
+                const solve = (b) => {
+                    for (let row = 0; row < 9; row++) {
+                        for (let col = 0; col < 9; col++) {
+                            if (b[row][col] === 0) {
+                                for (let num = 1; num <= 9; num++) {
+                                    if (this.isValid(b, row, col, num)) {
+                                        b[row][col] = num;
+                                        if (solve(b)) {
+                                            count++;
+                                            if (count > 1) return true; // 超过一个解就返回
+                                        }
+                                        b[row][col] = 0;
+                                    }
+                                }
+                                return false;
+                            }
+                        }
+                    }
+                    return true;
+                };
+                
+                // 创建副本以避免修改原棋盘
+                const boardCopy = board.map(row => [...row]);
+                solve(boardCopy);
+                return count;
             }
             
             shuffleArray(array) {
@@ -535,6 +624,11 @@
                             } else {
                                 cellElement.classList.add('user-input');
                             }
+                        }
+                        
+                        // 检查是否被标记为存疑
+                        if (this.markedCells[i][j]) {
+                            cellElement.classList.add('marked');
                         }
                         
                         // 绑定点击事件
@@ -727,6 +821,16 @@
                 this.renderBoard();
                 this.checkErrors();
                 this.checkWin();
+            }
+            
+            markCell() {
+                if (!this.selectedCell || this.paused) return;
+                
+                const { row, col } = this.selectedCell;
+                // 切换标记状态
+                this.markedCells[row][col] = !this.markedCells[row][col];
+                this.renderBoard();
+                this.checkErrors();
             }
             
             check() {
