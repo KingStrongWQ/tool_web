@@ -92,7 +92,7 @@
             flex-wrap: wrap;
         }
         button {
-            padding: 10px 15px;
+            padding: 10px 10px;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
             border: none;
@@ -169,6 +169,28 @@
         }
         .cell.marked {
             background-color: #fff3cd;
+        }
+        .cell .notes {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            font-size: 8px;
+            color: #666;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            grid-template-rows: repeat(3, 1fr);
+            align-items: center;
+            justify-items: center;
+        }
+        .cell .note {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .note-mode-button.active {
+            background: linear-gradient(135deg, #4caf50 0%, #45a049 100%) !important;
         }
         .cell.correct {
             color: #2e7d32;
@@ -277,6 +299,11 @@
         <h1>数独游戏</h1>
         
         <div class="game-info">
+            <select id="difficulty" class="difficulty-selector">
+                <option value="easy">简单</option>
+                <option value="medium">中等</option>
+                <option value="hard">困难</option>
+            </select>
             <div class="info-item">
                 难度: <span id="difficulty-display">简单</span>
             </div>
@@ -287,17 +314,13 @@
         </div>
         
         <div class="game-controls">
-            <select id="difficulty" class="difficulty-selector">
-                <option value="easy">简单</option>
-                <option value="medium">中等</option>
-                <option value="hard">困难</option>
-            </select>
             <button id="new-game">新游戏</button>
             <button id="undo">撤销</button>
             <button id="clear">清空</button>
             <button id="hint">提示</button>
             <button id="check">检查</button>
             <button id="mark">标注存疑</button>
+            <button id="note-mode" class="note-mode-button">✏️草稿</button>
         </div>
         
         <div class="sudoku-board" id="sudoku-board"></div>
@@ -329,11 +352,13 @@
                 this.userBoard = Array(9).fill().map(() => Array(9).fill(0));
                 this.initialBoard = Array(9).fill().map(() => Array(9).fill(0));
                 this.markedCells = Array(9).fill().map(() => Array(9).fill(false));
+                this.notes = Array(9).fill().map(() => Array(9).fill().map(() => Array(9).fill(false)));
                 this.history = [];
                 this.selectedCell = null;
                 this.gameStarted = false;
                 this.gameOver = false;
                 this.paused = false;
+                this.noteMode = false;
                 this.timerInterval = null;
                 this.timeElapsed = 0;
                 this.difficulty = 'easy';
@@ -363,6 +388,7 @@
                 document.getElementById('check').addEventListener('click', () => this.check());
                 document.getElementById('pause').addEventListener('click', () => this.togglePause());
                 document.getElementById('mark').addEventListener('click', () => this.markCell());
+                document.getElementById('note-mode').addEventListener('click', () => this.toggleNoteMode());
                 
                 // 数字键盘
                 document.querySelectorAll('.number-button').forEach(button => {
@@ -409,6 +435,19 @@
                 }
             }
             
+            toggleNoteMode() {
+                this.noteMode = !this.noteMode;
+                const noteModeBtn = document.getElementById('note-mode');
+                
+                if (this.noteMode) {
+                    noteModeBtn.classList.add('active');
+                    noteModeBtn.textContent = '✏️草稿(开)';
+                } else {
+                    noteModeBtn.classList.remove('active');
+                    noteModeBtn.textContent = '✏️草稿';
+                }
+            }
+            
             startTimer() {
                 this.timerInterval = setInterval(() => {
                     if (!this.paused) {
@@ -425,7 +464,9 @@
                 this.gameStarted = false;
                 this.gameOver = false;
                 this.paused = false;
+                this.noteMode = false;
                 this.markedCells = Array(9).fill().map(() => Array(9).fill(false));
+                this.notes = Array(9).fill().map(() => Array(9).fill().map(() => Array(9).fill(false)));
                 this.timeElapsed = 0;
                 
                 // 重置UI
@@ -433,6 +474,11 @@
                 const pauseBtn = document.getElementById('pause');
                 pauseBtn.textContent = '暂停';
                 pauseBtn.classList.remove('paused');
+                
+                const noteModeBtn = document.getElementById('note-mode');
+                noteModeBtn.classList.remove('active');
+                noteModeBtn.textContent = '✏️草稿';
+                
                 document.getElementById('game-message').className = 'game-message';
                 document.getElementById('game-message').textContent = '';
                 
@@ -617,6 +663,11 @@
                         const cellElement = document.createElement('div');
                         cellElement.className = 'cell';
                         
+                        // 检查是否被标记为存疑
+                        if (this.markedCells[i][j]) {
+                            cellElement.classList.add('marked');
+                        }
+                        
                         if (this.board[i][j] !== 0) {
                             cellElement.textContent = this.board[i][j];
                             if (this.initialBoard[i][j] !== 0) {
@@ -624,11 +675,25 @@
                             } else {
                                 cellElement.classList.add('user-input');
                             }
-                        }
-                        
-                        // 检查是否被标记为存疑
-                        if (this.markedCells[i][j]) {
-                            cellElement.classList.add('marked');
+                        } else {
+                            // 显示草稿数字
+                            const notesElement = document.createElement('div');
+                            notesElement.className = 'notes';
+                            
+                            for (let num = 1; num <= 9; num++) {
+                                if (this.notes[i][j][num - 1]) {
+                                    const noteElement = document.createElement('div');
+                                    noteElement.className = 'note';
+                                    noteElement.textContent = num;
+                                    notesElement.appendChild(noteElement);
+                                } else {
+                                    const noteElement = document.createElement('div');
+                                    noteElement.className = 'note';
+                                    notesElement.appendChild(noteElement);
+                                }
+                            }
+                            
+                            cellElement.appendChild(notesElement);
                         }
                         
                         // 绑定点击事件
@@ -701,14 +766,36 @@
                     return;
                 }
                 
-                // 保存历史记录
-                this.history.push({ row, col, value: this.board[row][col] });
-                
-                // 更新单元格
-                this.board[row][col] = number;
-                this.renderBoard();
-                this.checkErrors();
-                this.checkWin();
+                if (this.noteMode) {
+                    // 草稿模式：已填数字的格子不能写草稿
+                    if (this.board[row][col] !== 0) {
+                        return;
+                    }
+                    
+                    // 切换草稿数字状态
+                    this.notes[row][col][number - 1] = !this.notes[row][col][number - 1];
+                    this.renderBoard();
+                } else {
+                    // 正常模式：保存历史记录
+                    this.history.push({ 
+                        row, 
+                        col, 
+                        value: this.board[row][col],
+                        notes: [...this.notes[row][col]]
+                    });
+                    
+                    // 更新单元格
+                    this.board[row][col] = number;
+                    
+                    // 如果填了数字，清除该格子的草稿
+                    if (number !== 0) {
+                        this.notes[row][col] = Array(9).fill(false);
+                    }
+                    
+                    this.renderBoard();
+                    this.checkErrors();
+                    this.checkWin();
+                }
             }
             
             checkErrors() {
@@ -790,6 +877,12 @@
                 
                 const lastMove = this.history.pop();
                 this.board[lastMove.row][lastMove.col] = lastMove.value;
+                
+                // 如果撤销后单元格为空，恢复草稿状态
+                if (lastMove.value === 0 && lastMove.notes) {
+                    this.notes[lastMove.row][lastMove.col] = lastMove.notes;
+                }
+                
                 this.renderBoard();
                 this.checkErrors();
             }
@@ -801,9 +894,15 @@
                 if (this.initialBoard[row][col] !== 0) return;
                 
                 // 保存历史记录
-                this.history.push({ row, col, value: this.board[row][col] });
+                this.history.push({ 
+                    row, 
+                    col, 
+                    value: this.board[row][col],
+                    notes: [...this.notes[row][col]]
+                });
                 
                 this.board[row][col] = 0;
+                this.notes[row][col] = Array(9).fill(false);
                 this.renderBoard();
                 this.checkErrors();
             }
@@ -815,9 +914,15 @@
                 if (this.initialBoard[row][col] !== 0) return;
                 
                 // 保存历史记录
-                this.history.push({ row, col, value: this.board[row][col] });
+                this.history.push({ 
+                    row, 
+                    col, 
+                    value: this.board[row][col],
+                    notes: [...this.notes[row][col]]
+                });
                 
                 this.board[row][col] = this.solution[row][col];
+                this.notes[row][col] = Array(9).fill(false);
                 this.renderBoard();
                 this.checkErrors();
                 this.checkWin();
