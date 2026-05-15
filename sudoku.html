@@ -11,176 +11,244 @@
             box-sizing: border-box;
         }
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            font-family: 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', system-ui, sans-serif;
+            /* 暖色调柔和渐变背景 — 护眼米色系 */
+            background: linear-gradient(150deg, #f5efe6 0%, #e8dfd3 40%, #f0e9dd 100%);
             display: flex;
             justify-content: center;
             align-items: center;
             min-height: 100vh;
+            color: #2d3748;
         }
         .container {
-            background-color: white;
-            padding: 30px;
-            border-radius: 16px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-            max-width: 600px;
+            background-color: #fff;
+            padding: 28px 30px 24px;
+            border-radius: 20px;
+            box-shadow: 0 8px 40px rgba(0, 0, 0, 0.07), 0 2px 8px rgba(0, 0, 0, 0.04);
+            max-width: 560px;
             width: 100%;
             text-align: center;
-            backdrop-filter: blur(10px);
         }
         h1 {
-            color: #333;
-            margin-bottom: 20px;
-            font-size: 28px;
-            font-weight: 600;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
+            font-size: 26px;
+            font-weight: 650;
+            letter-spacing: 2px;
+            margin-bottom: 18px;
+            color: #374151;
         }
+        h1 span {
+            color: #6366f1;
+        }
+
+        /* ---- 顶部信息栏 ---- */
         .game-info {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 20px;
-            padding: 15px;
-            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            margin-bottom: 14px;
+            padding: 10px 14px;
+            background: #f8f6f3;
             border-radius: 12px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-        }
-        .pause-button {
-            padding: 8px 16px;
-            border-radius: 20px;
-            border: none;
-            color: white;
-            font-size: 14px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            background: #f44336 !important;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
-        }
-        .pause-button:hover {
-            transform: scale(1.05);
-        }
-        .pause-button.paused {
-            background: #4caf50 !important;
+            border: 1px solid #eeeae5;
         }
         .info-item {
             display: flex;
             align-items: center;
-            font-size: 16px;
+            font-size: 13px;
             font-weight: 500;
-            color: #333;
+            color: #6b7280;
+            gap: 6px;
         }
         .info-item span {
-            margin-left: 10px;
-            padding: 5px 15px;
-            background-color: white;
-            border-radius: 20px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-            min-width: 60px;
+            padding: 2px 12px;
+            background: #fff;
+            border-radius: 14px;
+            border: 1px solid #e5e0d9;
+            font-family: 'JetBrains Mono', 'Consolas', monospace;
+            font-size: 14px;
+            font-weight: 600;
+            color: #374151;
+            min-width: 48px;
         }
+        .difficulty-selector {
+            padding: 6px 12px;
+            border: 1px solid #e0dbd4;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 500;
+            background: #fff;
+            color: #374151;
+            cursor: pointer;
+            outline: none;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+        .difficulty-selector:focus {
+            border-color: #818cf8;
+            box-shadow: 0 0 0 3px rgba(129, 140, 248, 0.15);
+        }
+
+        /* ---- 暂停按钮 ---- */
+        .pause-button {
+            padding: 6px 14px;
+            border-radius: 8px;
+            border: none;
+            color: #fff;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            background: #f87171;
+        }
+        .pause-button:hover {
+            background: #ef4444;
+            transform: translateY(-1px);
+        }
+        .pause-button.paused {
+            background: #34d399;
+        }
+        .pause-button.paused:hover {
+            background: #10b981;
+        }
+
+        /* ---- 控制按钮组 ---- */
         .game-controls {
             display: flex;
             justify-content: center;
-            gap: 10px;
-            margin-bottom: 20px;
+            gap: 8px;
+            margin-bottom: 16px;
             flex-wrap: wrap;
         }
-        button {
-            padding: 10px 10px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            border: none;
+        .game-controls button {
+            padding: 6px 14px;
+            border: 1px solid #e0dbd4;
+            background: #fff;
+            color: #4b5563;
             border-radius: 8px;
             cursor: pointer;
-            font-size: 14px;
+            font-size: 13px;
             font-weight: 500;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+            transition: all 0.2s ease;
+            font-family: inherit;
         }
-        button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 16px rgba(102, 126, 234, 0.4);
+        .game-controls button:hover {
+            background: #f3f1ee;
+            border-color: #c8c2b8;
+            transform: translateY(-1px);
         }
-        .difficulty-selector {
-            padding: 10px 15px;
-            border: 2px solid #e0e0e0;
-            border-radius: 8px;
-            font-size: 14px;
-            font-weight: 500;
-            transition: all 0.3s ease;
+        .game-controls button:active {
+            transform: translateY(0);
         }
-        .difficulty-selector:focus {
-            outline: none;
-            border-color: #667eea;
-            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
-        }
+
+        /* ---- 数独棋盘 ---- */
         .sudoku-board {
             display: inline-block;
-            border: 3px solid #333;
+            border: 2px solid #8b7e6d;
             border-radius: 8px;
-            padding: 10px;
-            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            background: #faf8f5;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
             margin: 0 auto;
+            padding: 0;
+            overflow: hidden;
         }
         .row {
             display: flex;
         }
+
+        /* ---- 单元格 ---- */
         .cell {
-            width: 40px;
-            height: 40px;
-            border: 1px solid #ddd;
+            width: 42px;
+            height: 42px;
+            border: 0.5px solid #d4cdc3;
             display: flex;
             justify-content: center;
             align-items: center;
             font-weight: 600;
             cursor: pointer;
-            transition: all 0.2s ease;
-            font-size: 18px;
-            background-color: white;
+            font-size: 19px;
+            background-color: #fff;
+            transition: background-color 0.12s ease;
+            position: relative;
+            user-select: none;
         }
         .cell:hover {
-            background-color: #f0f0f0;
-            transform: scale(1.05);
+            background-color: #f5f3f0;
         }
+
+        /* 3×3 宫格粗边框 */
+        .cell:nth-child(3n) { border-right: 1.5px solid #8b7e6d; }
+        .cell:nth-child(9)  { border-right: none; }
+        .cell:nth-child(3n+1) { border-left: 1.5px solid #8b7e6d; }
+        .cell:first-child  { border-left: none; }
+        .row:nth-child(3n) .cell { border-bottom: 1.5px solid #8b7e6d; }
+        .row:last-child .cell   { border-bottom: 0.5px solid #d4cdc3; }
+        .row:nth-child(3n+1) .cell { border-top: 1.5px solid #8b7e6d; }
+        .row:first-child .cell  { border-top: none; }
+
+        /* 宫格右下角圆角适配 */
+        .row:last-child .cell:first-child { border-radius: 0 0 0 8px; }
+        .row:last-child .cell:last-child  { border-radius: 0 0 8px 0; }
+
+        /* 选中态 */
         .cell.selected {
-            background-color: #e3f2fd;
-            border-color: #2196f3;
+            background-color: #dbeafe;
+            border-color: #6366f1 !important;
+            z-index: 1;
         }
+        /* 关联区域高亮（同行/列/宫） */
         .cell.highlight {
-            background-color: #e8f5e9;
+            background-color: #f5f3f0;
         }
+        .cell.highlight.selected {
+            background-color: #dbeafe;
+        }
+
+        /* 固定数字（题目初始给的） */
         .cell.fixed {
-            color: #667eea;
+            color: #4f46e5;
             font-weight: 700;
         }
+
+        /* 用户填入的数字 */
         .cell.user-input {
-            color: #333;
+            color: #1e293b;
             font-weight: 600;
         }
+
+        /* 正确（check 通过时） */
+        .cell.correct {
+            color: #059669;
+        }
+
+        /* 错误 */
         .cell.error {
-            color: #f44336;
+            color: #dc2626;
+            background-color: #fef2f2;
         }
+        .cell.error.selected {
+            background-color: #fef2f2;
+        }
+        .cell.error.highlight {
+            background-color: #fef2f2;
+        }
+
+        /* 存疑标记 */
         .cell.marked {
-            background-color: #fff3cd;
+            background-color: #fef9c3;
         }
+        .cell.marked.selected {
+            background-color: #fef9c3;
+        }
+
+        /* ---- 草稿数字 ---- */
         .cell .notes {
-            position: relative;
-            width: 100%;
-            height: 100%;
-            font-size: 8px;
-            color: #666;
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
             display: grid;
             grid-template-columns: repeat(3, 1fr);
             grid-template-rows: repeat(3, 1fr);
             align-items: center;
             justify-items: center;
+            pointer-events: none;
         }
         .cell .note {
             width: 100%;
@@ -188,164 +256,173 @@
             display: flex;
             align-items: center;
             justify-content: center;
-        }
-        .cell.correct {
-            color: #2e7d32;
-        }
-        .draft-number-pad {
-            display: grid;
-            grid-template-columns: repeat(5, 1fr);
-            gap: 6px;
-            margin-top: 12px;
-            max-width: 400px;
-            margin-left: auto;
-            margin-right: auto;
-        }
-        .draft-button {
-            padding: 5px 8px;
-            background: linear-gradient(135deg, #fff5eb 0%, #ffe8d1 100%);
-            border: 1px solid #ffd8a8;
-            border-radius: 6px;
-            font-size: 12px;
+            font-size: 9px;
             font-weight: 500;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            min-width: 38px;
-            height: 32px;
-            text-align: center;
-            color: #6b5a4a;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.06);
+            color: #9ca3af;
         }
-        .draft-button:hover {
-            background: linear-gradient(135deg, #ffb347 0%, #ff9333 100%);
-            color: white;
-            transform: translateY(-1px);
-            box-shadow: 0 4px 8px rgba(255, 147, 51, 0.4);
-            border-color: #ff9333;
+        .cell .note:empty {
+            visibility: hidden;
         }
-        .draft-button.active {
-            background: linear-gradient(135deg, #4caf50 0%, #45a049 100%) !important;
-            color: white;
-            border-color: #45a049;
-            box-shadow: 0 4px 8px rgba(76, 175, 80, 0.4);
-        }
-        .buttons-hint {
-            margin-top: 12px;
-            font-size: 12px;
-            color: #888;
-            text-align: center;
-        }
-        .cell:nth-child(3n) {
-            border-right: 2px solid #333;
-        }
-        .cell:nth-child(3n+1) {
-            border-left: 2px solid #333;
-        }
-        .row:nth-child(3n) .cell {
-            border-bottom: 2px solid #333;
-        }
-        .row:nth-child(3n+1) .cell {
-            border-top: 2px solid #333;
-        }
+
+        /* ---- 数字输入键盘 ---- */
         .number-pad {
             display: grid;
             grid-template-columns: repeat(5, 1fr);
-            gap: 10px;
-            margin-top: 20px;
-            max-width: 400px;
+            gap: 8px;
+            margin-top: 16px;
+            max-width: 380px;
             margin-left: auto;
             margin-right: auto;
         }
         .number-button {
-            padding: 6px 8px;
-            background: linear-gradient(135deg, #e8f4f8 0%, #d4e8ed 100%);
-            border: 1px solid #b8d4d9;
-            border-radius: 8px;
-            font-size: 13px;
+            padding: 8px 4px;
+            background: #f8f6f3;
+            border: 1px solid #e0dbd4;
+            border-radius: 10px;
+            font-size: 15px;
             font-weight: 600;
             cursor: pointer;
-            transition: all 0.2s ease;
-            min-width: 38px;
-            height: 36px;
+            transition: all 0.18s ease;
+            height: 40px;
             text-align: center;
-            color: #5a6c7d;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
+            color: #374151;
+            font-family: inherit;
         }
         .number-button:hover {
-            background: linear-gradient(135deg, #5d9cec 0%, #4a7bc7 100%);
-            color: white;
-            transform: translateY(-1px);
-            box-shadow: 0 4px 8px rgba(93, 156, 236, 0.35);
-            border-color: #4a7bc7;
+            background: #6366f1;
+            color: #fff;
+            border-color: #6366f1;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.25);
         }
-        .game-message {
-            margin-top: 20px;
-            padding: 15px;
+        .number-button:active {
+            transform: translateY(0);
+        }
+
+        /* ---- 草稿键盘 ---- */
+        .draft-number-pad {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 6px;
+            margin-top: 8px;
+            max-width: 380px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        .draft-button {
+            padding: 4px 6px;
+            background: #fffbeb;
+            border: 1px solid #fde68a;
             border-radius: 8px;
-            font-size: 18px;
+            font-size: 12px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.18s ease;
+            height: 30px;
+            text-align: center;
+            color: #92400e;
+            font-family: inherit;
+        }
+        .draft-button:hover {
+            background: #fbbf24;
+            color: #1e293b;
+            border-color: #f59e0b;
+            transform: translateY(-1px);
+            box-shadow: 0 3px 8px rgba(251, 191, 36, 0.3);
+        }
+        .draft-button.active {
+            background: #10b981 !important;
+            color: #fff !important;
+            border-color: #059669 !important;
+            box-shadow: 0 3px 8px rgba(16, 185, 129, 0.3);
+        }
+
+        .buttons-hint {
+            margin-top: 8px;
+            font-size: 11px;
+            color: #9ca3af;
+            text-align: center;
+        }
+
+        /* ---- 消息提示 ---- */
+        .game-message {
+            margin-top: 16px;
+            padding: 12px 16px;
+            border-radius: 10px;
+            font-size: 16px;
             font-weight: 600;
             display: none;
         }
         .game-message.win {
-            background-color: #4caf50;
-            color: white;
+            background: #ecfdf5;
+            color: #059669;
             display: block;
+            border: 1px solid #a7f3d0;
         }
+        .game-message.lose {
+            background: #fef2f2;
+            color: #dc2626;
+            display: block;
+            border: 1px solid #fecaca;
+        }
+        .game-message.info {
+            background: #f0f4ff;
+            color: #4f46e5;
+            display: block;
+            border: 1px solid #c7d2fe;
+        }
+
+        /* ---- 返回链接 ---- */
         .back-link {
             display: block;
             text-align: center;
-            margin-top: 30px;
-            color: #667eea;
+            margin-top: 24px;
+            color: #9ca3af;
             text-decoration: none;
-            font-size: 14px;
+            font-size: 13px;
             font-weight: 500;
-            padding: 10px 20px;
-            border: 2px solid #667eea;
-            border-radius: 25px;
-            transition: all 0.3s ease;
+            padding: 8px 20px;
+            border: 1px solid #e5e7eb;
+            border-radius: 20px;
+            transition: all 0.25s ease;
+            width: fit-content;
+            margin-left: auto;
+            margin-right: auto;
         }
         .back-link:hover {
-            background-color: #667eea;
-            color: white;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+            color: #6366f1;
+            border-color: #6366f1;
+            box-shadow: 0 2px 10px rgba(99, 102, 241, 0.12);
         }
-        @media (max-width: 768px) {
-            .container {
-                padding: 20px;
-            }
-            .cell {
-                width: 35px;
-                height: 35px;
-                font-size: 16px;
-            }
-            .game-info {
-                flex-direction: column;
-                gap: 10px;
-                align-items: flex-start;
-            }
-            .game-controls {
-                flex-wrap: wrap;
-            }
+
+        /* 暂停覆盖层样式（JS 注入的文字） */
+        #game-message {
+            margin-top: 16px;
         }
-        @media (max-width: 480px) {
-            .cell {
-                width: 30px;
-                height: 30px;
-                font-size: 14px;
-            }
-            .number-button {
-                min-width: 32px;
-                height: 32px;
-                font-size: 12px;
-                padding: 4px 6px;
-            }
-            .draft-button {
-                min-width: 32px;
-                height: 28px;
-                font-size: 11px;
-                padding: 3px 6px;
-            }
+
+        /* ---- 响应式 ---- */
+        @media (max-width: 520px) {
+            .container { padding: 16px; border-radius: 14px; }
+            h1 { font-size: 22px; margin-bottom: 12px; }
+            .cell { width: 36px; height: 36px; font-size: 16px; }
+            .cell .note { font-size: 8px; }
+            .game-info { flex-wrap: wrap; gap: 6px; padding: 8px 10px; }
+            .info-item { font-size: 12px; }
+            .info-item span { font-size: 12px; min-width: 36px; padding: 2px 8px; }
+            .number-button { height: 36px; font-size: 14px; }
+            .draft-button { height: 28px; font-size: 11px; }
+            .game-controls button { padding: 5px 10px; font-size: 12px; }
+        }
+        @media (max-width: 400px) {
+            .container { padding: 10px; }
+            h1 { font-size: 19px; letter-spacing: 1px; }
+            .cell { width: 30px; height: 30px; font-size: 14px; }
+            .cell .note { font-size: 7px; }
+            .number-button { height: 32px; font-size: 13px; padding: 4px; }
+            .draft-button { height: 26px; font-size: 10px; }
+            .game-controls { gap: 4px; }
+            .game-controls button { padding: 4px 8px; font-size: 11px; }
+            .pause-button { padding: 4px 10px; font-size: 12px; }
         }
     </style>
 </head>
@@ -493,6 +570,7 @@
             togglePause() {
                 this.paused = !this.paused;
                 const pauseBtn = document.getElementById('pause');
+                const msg = document.getElementById('game-message');
 
                 if (this.paused) {
                     pauseBtn.textContent = '继续';
@@ -501,14 +579,16 @@
                         clearInterval(this.timerInterval);
                         this.timerInterval = null;
                     }
-                    document.getElementById('game-message').textContent = '游戏已暂停';
+                    msg.className = 'game-message info';
+                    msg.textContent = '⏸ 游戏已暂停';
                 } else {
                     pauseBtn.textContent = '暂停';
                     pauseBtn.classList.remove('paused');
                     if (this.gameStarted && !this.gameOver) {
                         this.startTimer();
                     }
-                    document.getElementById('game-message').textContent = '';
+                    msg.className = 'game-message';
+                    msg.textContent = '';
                 }
             }
 
@@ -890,6 +970,8 @@
                 // 如果填了数字，清除该格子的草稿
                 if (number !== 0) {
                     this.notes[row][col] = Array(9).fill(false);
+                    // 同时清除同行、同列、同宫格中所有格子的该数字草稿
+                    this.removeRelatedNotes(row, col, number);
                 }
 
                 this.renderBoard();
@@ -898,6 +980,30 @@
                 this.updateDraftButtonStates();
             }
             
+            removeRelatedNotes(row, col, num) {
+                // 当填入正确数字后，清除同行、同列、同宫格中所有格子对该数字的草稿标注
+                // 比如填入 1，则横排、竖排、3×3 宫格里所有格子的草稿 1 都要去掉
+                if (num === 0) return;
+                const noteIdx = num - 1;
+
+                // 清除同行的草稿
+                for (let c = 0; c < 9; c++) {
+                    this.notes[row][c][noteIdx] = false;
+                }
+                // 清除同列的草稿
+                for (let r = 0; r < 9; r++) {
+                    this.notes[r][col][noteIdx] = false;
+                }
+                // 清除同宫格的草稿
+                const startRow = row - row % 3;
+                const startCol = col - col % 3;
+                for (let r = startRow; r < startRow + 3; r++) {
+                    for (let c = startCol; c < startCol + 3; c++) {
+                        this.notes[r][c][noteIdx] = false;
+                    }
+                }
+            }
+
             checkErrors() {
                 // 检查错误 - 只检查用户输入的数字
                 for (let i = 0; i < 9; i++) {
@@ -1025,6 +1131,8 @@
 
                 this.board[row][col] = this.solution[row][col];
                 this.notes[row][col] = Array(9).fill(false);
+                // 提示填入数字后，也清除相关格子的草稿
+                this.removeRelatedNotes(row, col, this.solution[row][col]);
                 this.renderBoard();
                 this.checkErrors();
                 this.checkWin();
