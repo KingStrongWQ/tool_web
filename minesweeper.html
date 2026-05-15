@@ -106,6 +106,8 @@
             background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
             box-shadow: 0 4px 12px rgba(0,0,0,0.05);
             margin: 0 auto;
+            max-width: 100%;
+            overflow-x: auto;
         }
         .row {
             display: flex;
@@ -363,9 +365,9 @@
                 const col = Math.floor(Math.random() * config.cols);
                 
                 // 避免在第一次点击的位置及其周围放置地雷
-                if (!board[row][col].isMine && 
-                    Math.abs(row - firstRow) > 1 || 
-                    Math.abs(col - firstCol) > 1) {
+                if (!board[row][col].isMine &&
+                    (Math.abs(row - firstRow) > 1 ||
+                    Math.abs(col - firstCol) > 1)) {
                     board[row][col].isMine = true;
                     minesPlaced++;
                 }
