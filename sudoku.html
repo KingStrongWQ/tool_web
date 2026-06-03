@@ -1063,11 +1063,7 @@
 
                     if (!this.selectedCell || num === 0) return;
 
-                    const { row, col } = this.selectedCell;
-                    // 固定单元格不限制数字按钮（因为不能修改）
-                    if (this.initialBoard[row][col] !== 0) return;
-
-                    // 该数字全盘已填满9个 → 禁止点击
+                    // 该数字全盘已填满9个 → 禁止点击（与选中哪个格子无关）
                     if (this.isNumberFullyPlaced(num)) {
                         button.disabled = true;
                     }
