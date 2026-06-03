@@ -563,7 +563,6 @@
                 // idl e → 播放开局动画
                 hideOverlay();
                 btnStart.disabled = true;
-                speedSelector.disabled = true;
                 isIntroPlaying = true;
                 introProgress = 0;
                 animateIntro();
@@ -719,12 +718,11 @@
             };
 
             // ---- 碰撞检测 ----
-            // 撞墙
-            if (newHead.x < 0 || newHead.x >= GRID_SIZE ||
-                newHead.y < 0 || newHead.y >= GRID_SIZE) {
-                endGame(false);
-                return;
-            }
+            // 穿墙：撞墙后从另一边出来
+            if (newHead.x < 0) newHead.x = GRID_SIZE - 1;
+            else if (newHead.x >= GRID_SIZE) newHead.x = 0;
+            if (newHead.y < 0) newHead.y = GRID_SIZE - 1;
+            else if (newHead.y >= GRID_SIZE) newHead.y = 0;
 
             // 撞自身（检查新头是否与身体重叠，注意尾部即将移除，但新头不能撞除尾部外的身体）
             const willEat = (newHead.x === food.x && newHead.y === food.y);

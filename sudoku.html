@@ -110,6 +110,17 @@
             background: #10b981;
         }
 
+        /* 草稿模式按钮激活态 */
+        #draft-mode.active {
+            background: #6366f1;
+            color: #fff;
+            border-color: #6366f1;
+        }
+        #draft-mode.active:hover {
+            background: #4f46e5;
+            transform: translateY(-1px);
+        }
+
         /* ---- 控制按钮组 ---- */
         .game-controls {
             display: flex;
@@ -202,6 +213,23 @@
             background-color: #dbeafe;
         }
 
+        /* 相同数字高亮 */
+        .cell.same-number {
+            background-color: #d4edda !important;
+        }
+
+        /* 禁用数字按钮 */
+        .number-button:disabled {
+            opacity: 0.35;
+            cursor: not-allowed;
+            background: #e5e5e5 !important;
+            color: #bbb !important;
+            border-color: #ddd !important;
+            transform: none !important;
+            box-shadow: none !important;
+            pointer-events: none;
+        }
+
         /* 固定数字（题目初始给的） */
         .cell.fixed {
             color: #4f46e5;
@@ -229,14 +257,6 @@
         }
         .cell.error.highlight {
             background-color: #fef2f2;
-        }
-
-        /* 存疑标记 */
-        .cell.marked {
-            background-color: #fef9c3;
-        }
-        .cell.marked.selected {
-            background-color: #fef9c3;
         }
 
         /* ---- 草稿数字 ---- */
@@ -451,7 +471,7 @@
             <button id="clear">清空</button>
             <button id="hint">提示</button>
             <button id="check">检查</button>
-            <button id="mark">标注存疑</button>
+            <button id="draft-mode">草稿模式</button>
         </div>
 
         <div class="sudoku-board" id="sudoku-board"></div>
@@ -482,7 +502,7 @@
             <button class="draft-button" data-draft="clear">清空</button>
         </div>
 
-        <div class="buttons-hint">点击蓝色按钮输入数字，点击黄色按钮进行标记</div>
+        <div class="buttons-hint">点击蓝色按钮输入数字，点击黄色按钮进行标记，开启草稿模式后键盘输入填入草稿</div>
 
         <div class="game-message" id="game-message"></div>
         
@@ -497,7 +517,7 @@
                 this.solution = Array(9).fill().map(() => Array(9).fill(0));
                 this.userBoard = Array(9).fill().map(() => Array(9).fill(0));
                 this.initialBoard = Array(9).fill().map(() => Array(9).fill(0));
-                this.markedCells = Array(9).fill().map(() => Array(9).fill(false));
+                this.draftMode = false;
                 this.notes = Array(9).fill().map(() => Array(9).fill().map(() => Array(9).fill(false)));
                 this.history = [];
                 this.selectedCell = null;
@@ -532,7 +552,7 @@
                 document.getElementById('hint').addEventListener('click', () => this.hint());
                 document.getElementById('check').addEventListener('click', () => this.check());
                 document.getElementById('pause').addEventListener('click', () => this.togglePause());
-                document.getElementById('mark').addEventListener('click', () => this.markCell());
+                document.getElementById('draft-mode').addEventListener('click', () => this.toggleDraftMode());
 
                 // 数字键盘
                 document.querySelectorAll('.number-button').forEach(button => {
@@ -559,9 +579,18 @@
                     if (this.selectedCell && !this.paused) {
                         const key = e.key;
                         if (key >= '1' && key <= '9') {
-                            this.enterNumber(parseInt(key));
+                            const num = parseInt(key);
+                            if (this.draftMode) {
+                                this.enterDraft(String(num));
+                            } else {
+                                this.enterNumber(num);
+                            }
                         } else if (key === '0' || key === 'Backspace' || key === 'Delete') {
-                            this.enterNumber(0);
+                            if (this.draftMode) {
+                                this.enterDraft('clear');
+                            } else {
+                                this.enterNumber(0);
+                            }
                         }
                     }
                 });
@@ -657,7 +686,7 @@
                 this.gameStarted = false;
                 this.gameOver = false;
                 this.paused = false;
-                this.markedCells = Array(9).fill().map(() => Array(9).fill(false));
+                this.draftMode = false;
                 this.notes = Array(9).fill().map(() => Array(9).fill().map(() => Array(9).fill(false)));
                 this.timeElapsed = 0;
 
@@ -666,6 +695,11 @@
                 const pauseBtn = document.getElementById('pause');
                 pauseBtn.textContent = '暂停';
                 pauseBtn.classList.remove('paused');
+
+                // 重置草稿模式按钮
+                const draftBtn = document.getElementById('draft-mode');
+                draftBtn.classList.remove('active');
+                draftBtn.textContent = '草稿模式';
 
                 document.getElementById('game-message').className = 'game-message';
                 document.getElementById('game-message').textContent = '';
@@ -851,12 +885,7 @@
                     for (let j = 0; j < 9; j++) {
                         const cellElement = document.createElement('div');
                         cellElement.className = 'cell';
-                        
-                        // 检查是否被标记为存疑
-                        if (this.markedCells[i][j]) {
-                            cellElement.classList.add('marked');
-                        }
-                        
+
                         if (this.board[i][j] !== 0) {
                             cellElement.textContent = this.board[i][j];
                             if (this.initialBoard[i][j] !== 0) {
@@ -895,8 +924,9 @@
                 }
                 
                 this.updateHighlights();
+                this.updateNumberButtonStates();
             }
-            
+
             selectCell(row, col) {
                 // 游戏暂停时不能选择单元格
                 if (this.paused) return;
@@ -907,40 +937,45 @@
                     this.startTimer();
                 }
 
-                // 不能选择固定单元格
-                if (this.initialBoard[row][col] !== 0) {
-                    return;
-                }
-
                 this.selectedCell = { row, col };
                 this.updateHighlights();
                 this.updateDraftButtonStates();
+                this.updateNumberButtonStates();
             }
             
             updateHighlights() {
                 // 清除所有高亮
                 document.querySelectorAll('.cell').forEach(cell => {
-                    cell.classList.remove('selected', 'highlight');
+                    cell.classList.remove('selected', 'highlight', 'same-number');
                 });
-                
+
                 if (!this.selectedCell) return;
-                
+
                 const { row, col } = this.selectedCell;
                 const cells = document.querySelectorAll('.cell');
-                
+
                 // 高亮选中单元格
                 const selectedIndex = row * 9 + col;
                 cells[selectedIndex].classList.add('selected');
-                
-                // 高亮同行、同列、同宫格
+
+                const selectedNumber = this.board[row][col];
+
+                // 高亮同行、同列、同宫格 & 相同数字
                 for (let i = 0; i < 9; i++) {
                     for (let j = 0; j < 9; j++) {
+                        if (i === row && j === col) continue;
                         const index = i * 9 + j;
-                        if ((i === row || j === col || 
-                             (Math.floor(i / 3) === Math.floor(row / 3) && 
-                              Math.floor(j / 3) === Math.floor(col / 3))) && 
-                            !(i === row && j === col)) {
+
+                        // 同行/列/宫格高亮
+                        if (i === row || j === col ||
+                            (Math.floor(i / 3) === Math.floor(row / 3) &&
+                             Math.floor(j / 3) === Math.floor(col / 3))) {
                             cells[index].classList.add('highlight');
+                        }
+
+                        // 相同数字高亮
+                        if (selectedNumber !== 0 && this.board[i][j] === selectedNumber) {
+                            cells[index].classList.add('same-number');
                         }
                     }
                 }
@@ -953,6 +988,11 @@
 
                 // 不能修改固定单元格
                 if (this.initialBoard[row][col] !== 0) {
+                    return;
+                }
+
+                // 如果该数字已在全盘填满9个（全部放置完毕），不做响应（包括键盘输入）
+                if (number !== 0 && this.isNumberFullyPlaced(number)) {
                     return;
                 }
 
@@ -1002,6 +1042,36 @@
                         this.notes[r][c][noteIdx] = false;
                     }
                 }
+            }
+
+            isNumberFullyPlaced(num) {
+                // 检查该数字是否已在全盘填满了9个（即全部放置完毕）
+                let count = 0;
+                for (let i = 0; i < 9; i++) {
+                    for (let j = 0; j < 9; j++) {
+                        if (this.board[i][j] === num) count++;
+                        if (count >= 9) return true;
+                    }
+                }
+                return false;
+            }
+
+            updateNumberButtonStates() {
+                document.querySelectorAll('.number-button').forEach(button => {
+                    const num = parseInt(button.dataset.number);
+                    button.disabled = false;
+
+                    if (!this.selectedCell || num === 0) return;
+
+                    const { row, col } = this.selectedCell;
+                    // 固定单元格不限制数字按钮（因为不能修改）
+                    if (this.initialBoard[row][col] !== 0) return;
+
+                    // 该数字全盘已填满9个 → 禁止点击
+                    if (this.isNumberFullyPlaced(num)) {
+                        button.disabled = true;
+                    }
+                });
             }
 
             checkErrors() {
@@ -1139,16 +1209,18 @@
                 this.updateDraftButtonStates();
             }
             
-            markCell() {
-                if (!this.selectedCell || this.paused) return;
-                
-                const { row, col } = this.selectedCell;
-                // 切换标记状态
-                this.markedCells[row][col] = !this.markedCells[row][col];
-                this.renderBoard();
-                this.checkErrors();
+            toggleDraftMode() {
+                this.draftMode = !this.draftMode;
+                const draftBtn = document.getElementById('draft-mode');
+                if (this.draftMode) {
+                    draftBtn.classList.add('active');
+                    draftBtn.textContent = '草稿模式(ON)';
+                } else {
+                    draftBtn.classList.remove('active');
+                    draftBtn.textContent = '草稿模式';
+                }
             }
-            
+
             check() {
                 // 检查所有单元格
                 this.checkErrors();
