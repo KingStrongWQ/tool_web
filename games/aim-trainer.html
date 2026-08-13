@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FPS 打靶训练</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0a0a0f 0%, #1a0a2e 40%, #0d0d1a 100%);
+            display: flex; justify-content: center; align-items: center;
+            min-height: 100vh; overflow: hidden;
+        }
+        .container {
+            background: rgba(8, 8, 20, 0.92); backdrop-filter: blur(16px);
+            padding: 28px 34px 34px; border-radius: 20px;
+            box-shadow: 0 0 60px rgba(0,240,255,0.08), 0 0 120px rgba(255,45,149,0.05), inset 0 1px 0 rgba(0,240,255,0.08);
+            max-width: 860px; width: 100%; text-align: center;
+            border: 1px solid rgba(0,240,255,0.12);
+        }
+        h1 {
+            font-size: 26px; font-weight: 700; margin-bottom: 14px; letter-spacing: 3px;
+            background: linear-gradient(90deg, #ff2d95, #00f0ff, #b537f2, #ff2d95);
+            background-size: 200% auto;
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            background-clip: text; animation: shimmer 3s ease-in-out infinite;
+        }
+        @keyframes shimmer {
+            0%,100% { background-position: 0% center; }
+            50% { background-position: 100% center; }
+        }
+        .mode-selector { display: flex; justify-content: center; gap: 10px; margin-bottom: 12px; }
+        .mode-btn {
+            padding: 6px 20px; border: 1px solid rgba(0,240,255,0.15); border-radius: 8px;
+            background: rgba(0,240,255,0.04); color: rgba(0,240,255,0.5);
+            font-size: 13px; font-weight: 600; cursor: pointer; transition: all 0.3s ease;
+        }
+        .mode-btn:hover { background: rgba(0,240,255,0.1); color: #00f0ff; }
+        .mode-btn.active {
+            background: linear-gradient(135deg, #00f0ff, #0088ff);
+            border-color: transparent; color: #fff;
+            box-shadow: 0 4px 20px rgba(0,240,255,0.25);
+        }
+        .game-info {
+            display: flex; justify-content: space-between; align-items: center;
+            margin-bottom: 12px; padding: 10px 16px;
+            background: rgba(0,240,255,0.03); border-radius: 12px;
+            border: 1px solid rgba(0,240,255,0.08); flex-wrap: wrap; gap: 4px;
+        }
+        .info-item { display: flex; align-items: center; font-size: 12px; font-weight: 500; color: rgba(0,240,255,0.5); }
+        .info-item .label { margin-right: 4px; }
+        .info-item .value {
+            padding: 3px 10px; background: rgba(0,0,0,0.3); border-radius: 8px;
+            font-family: 'Consolas','Courier New',monospace; font-size: 15px; font-weight: 700;
+            color: #00f0ff; min-width: 40px; display: inline-block;
+        }
+        .info-item .value.highlight { color: #ffd700; text-shadow: 0 0 10px rgba(255,215,0,0.3); }
+        .info-item .value.time-warn { color: #ff2d95; animation: pulse 0.5s ease-in-out infinite alternate; }
+        @keyframes pulse { from { opacity: 0.6; } to { opacity: 1; } }
+        .canvas-wrapper { position: relative; border-radius: 12px; overflow: hidden; border: 1px solid rgba(0,240,255,0.1); background: #080812; }
+        #gameCanvas { display: block; width: 100%; height: auto; aspect-ratio: 8 / 5; cursor: none; touch-action: none; }
+        .overlay {
+            position: absolute; inset: 0; background: rgba(5,5,15,0.90); backdrop-filter: blur(8px);
+            display: flex; align-items: center; justify-content: center; z-index: 10; transition: opacity 0.3s ease;
+        }
+        .overlay.hidden { opacity: 0; pointer-events: none; }
+        .overlay-content { text-align: center; padding: 24px 36px; max-width: 480px; }
+        .overlay-content h2 { font-size: 28px; font-weight: 700; margin-bottom: 8px; color: #fff; text-shadow: 0 0 20px rgba(0,240,255,0.3); letter-spacing: 2px; }
+        .overlay-content p { font-size: 14px; color: rgba(255,255,255,0.6); margin-bottom: 16px; line-height: 1.6; }
+        .countdown-num {
+            font-size: 80px; font-weight: 900;
+            background: linear-gradient(135deg, #ff2d95, #00f0ff);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+            animation: countPop 0.8s ease-out; line-height: 1.2;
+        }
+        @keyframes countPop {
+            0% { transform: scale(2); opacity: 0; }
+            50% { opacity: 1; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        .countdown-label { font-size: 16px; color: rgba(255,255,255,0.5); margin-top: 4px; }
+        .result-grid { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 10px; margin: 16px 0; }
+        .result-item { background: rgba(0,240,255,0.03); border-radius: 10px; padding: 10px 8px; border: 1px solid rgba(0,240,255,0.08); transition: all 0.3s ease; }
+        .result-item .result-label { font-size: 11px; color: rgba(0,240,255,0.4); margin-bottom: 2px; }
+        .result-item .result-value { font-size: 20px; font-weight: 700; font-family: 'Consolas','Courier New',monospace; }
+        .result-item .result-value.gold { color: #ffd700; text-shadow: 0 0 8px rgba(255,215,0,0.3); }
+        .result-item .result-value.green { color: #00ff87; text-shadow: 0 0 8px rgba(0,255,135,0.3); }
+        .result-item .result-value.blue { color: #00f0ff; text-shadow: 0 0 8px rgba(0,240,255,0.3); }
+        .result-item .result-value.red { color: #ff2d95; text-shadow: 0 0 8px rgba(255,45,149,0.3); }
+        .result-item .result-value.purple { color: #b537f2; text-shadow: 0 0 8px rgba(181,55,242,0.3); }
+        .result-item .result-value.orange { color: #ffd93d; text-shadow: 0 0 8px rgba(255,217,61,0.3); }
+        .result-best { margin: 10px 0 16px; padding: 12px; background: rgba(255,45,149,0.06); border-radius: 10px; border: 1px solid rgba(255,45,149,0.15); }
+        .result-best .best-label { font-size: 11px; color: rgba(255,45,149,0.6); }
+        .result-best .best-value { font-size: 14px; font-weight: 600; color: #ff2d95; text-shadow: 0 0 8px rgba(255,45,149,0.3); font-family: 'Consolas','Courier New',monospace; }
+        .btn-primary {
+            padding: 12px 36px; border: none; border-radius: 10px;
+            background: linear-gradient(135deg, #ff2d95, #b537f2);
+            color: #fff; font-size: 16px; font-weight: 700; cursor: pointer;
+            transition: all 0.3s ease; box-shadow: 0 4px 25px rgba(255,45,149,0.3); letter-spacing: 1px;
+        }
+        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 6px 30px rgba(255,45,149,0.4); }
+        .btn-primary:active { transform: translateY(0); }
+        .hint { margin-top: 12px; font-size: 12px; color: rgba(0,240,255,0.25); letter-spacing: 0.5px; }
+        @media (max-width: 700px) {
+            .container { padding: 16px; border-radius: 14px; }
+            h1 { font-size: 20px; }
+            .game-info { padding: 8px 12px; gap: 2px; }
+            .info-item { font-size: 11px; }
+            .info-item .value { font-size: 12px; padding: 2px 8px; min-width: 28px; }
+            .result-grid { gap: 6px; }
+            .result-item .result-value { font-size: 16px; }
+            .overlay-content h2 { font-size: 22px; }
+            .countdown-num { font-size: 60px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎯 FPS 打靶训练</h1>
+        <div class="mode-selector">
+            <button class="mode-btn active" data-time="30">30秒</button>
+            <button class="mode-btn" data-time="60">60秒</button>
+        </div>
+        <div class="game-info">
+            <div class="info-item"><span class="label">⏱ 剩余</span><span class="value" id="timeDisplay">30</span></div>
+            <div class="info-item"><span class="label">🎯 得分</span><span class="value" id="scoreDisplay">0</span></div>
+            <div class="info-item"><span class="label">📊 命中率</span><span class="value" id="hitRateDisplay">-</span></div>
+            <div class="info-item"><span class="label">⚡ 平均反应</span><span class="value" id="avgReactionDisplay">-</span></div>
+            <div class="info-item"><span class="label">🏆 最佳</span><span class="value" id="bestDisplay">-</span></div>
+        </div>
+        <div class="canvas-wrapper">
+            <canvas id="gameCanvas" width="960" height="600"></canvas>
+            <div class="overlay" id="overlay">
+                <div class="overlay-content" id="overlayContent">
+                    <h2 id="overlayTitle">🎯 准备就绪</h2>
+                    <p id="overlayDesc">调整好姿势，集中注意力<br>混合静态靶和移动靶，测试你的反应极限</p>
+                    <div id="resultArea" style="display:none;"></div>
+                    <button class="btn-primary" id="btnStart">开始训练</button>
+                </div>
+            </div>
+        </div>
+        <p class="hint">点击靶心射击 · 十字准星瞄准 · 混合移动靶与静态靶</p>
+    </div>
+    <script>
+/**
+ * FPS 打靶训练 - 完整 JavaScript 逻辑
+ * 渲染方式：Canvas 2D
+ * 特点：混合静态/移动靶、反应时间统计、LocalStorage 最佳成绩
+ */
+const canvas=document.getElementById('gameCanvas'),ctx=canvas.getContext('2d');
+const overlay=document.getElementById('overlay'),overlayContent=document.getElementById('overlayContent');
+const btnStart=document.getElementById('btnStart'),timeDisplay=document.getElementById('timeDisplay');
+const scoreDisplay=document.getElementById('scoreDisplay'),hitRateDisplay=document.getElementById('hitRateDisplay');
+const avgReactionDisplay=document.getElementById('avgReactionDisplay'),bestDisplay=document.getElementById('bestDisplay');
+const modeBtns=document.querySelectorAll('.mode-btn');
+let audioCtx=null;
+function initAudio(){if(!audioCtx)audioCtx=new(window.AudioContext||window.webkitAudioContext)();}
+function playHitSound(){try{initAudio();const o=audioCtx.createOscillator(),g=audioCtx.createGain();o.connect(g);g.connect(audioCtx.destination);o.type='sine';o.frequency.setValueAtTime(880,audioCtx.currentTime);o.frequency.exponentialRampToValueAtTime(1320,audioCtx.currentTime+0.08);g.gain.setValueAtTime(0.25,audioCtx.currentTime);g.gain.exponentialRampToValueAtTime(0.001,audioCtx.currentTime+0.15);o.start(audioCtx.currentTime);o.stop(audioCtx.currentTime+0.15);}catch(e){}}
+function playMissSound(){try{initAudio();const o=audioCtx.createOscillator(),g=audioCtx.createGain();o.connect(g);g.connect(audioCtx.destination);o.type='sine';o.frequency.setValueAtTime(220,audioCtx.currentTime);o.frequency.exponentialRampToValueAtTime(110,audioCtx.currentTime+0.1);g.gain.setValueAtTime(0.15,audioCtx.currentTime);g.gain.exponentialRampToValueAtTime(0.001,audioCtx.currentTime+0.12);o.start(audioCtx.currentTime);o.stop(audioCtx.currentTime+0.12);}catch(e){}}
+function playCountdownBeep(){try{initAudio();const o=audioCtx.createOscillator(),g=audioCtx.createGain();o.connect(g);g.connect(audioCtx.destination);o.type='square';o.frequency.setValueAtTime(600,audioCtx.currentTime);g.gain.setValueAtTime(0.1,audioCtx.currentTime);g.gain.exponentialRampToValueAtTime(0.001,audioCtx.currentTime+0.1);o.start(audioCtx.currentTime);o.stop(audioCtx.currentTime+0.1);}catch(e){}}
+function playStartBeep(){try{initAudio();const o=audioCtx.createOscillator(),g=audioCtx.createGain();o.connect(g);g.connect(audioCtx.destination);o.type='sine';o.frequency.setValueAtTime(660,audioCtx.currentTime);o.frequency.exponentialRampToValueAtTime(880,audioCtx.currentTime+0.15);g.gain.setValueAtTime(0.2,audioCtx.currentTime);g.gain.exponentialRampToValueAtTime(0.001,audioCtx.currentTime+0.2);o.start(audioCtx.currentTime);o.stop(audioCtx.currentTime+0.2);}catch(e){}}
+const R=25,M=35,SL=1500,ML=2000,SP=1.2,MR=0.3,SD=300;
+let gs='idle',st=30,tl=30,sc=0,hi=0,tm=0,ec=0,rt=[],bs=0,ba=0;
+let tg={x:0,y:0,type:'static',active:false,st:0,vx:0,vy:0,lt:SL,al:0,fi:false,ha:false,hs:0};
+let lt=0,af=null,gst=0,ct=null,stm=null,mx=-100,my=-100,mc=false,he=[];
+function loadBest(){try{const s=localStorage.getItem('aimTrainer_bestScore'),a=localStorage.getItem('aimTrainer_bestAvgReaction');if(s!==null)bs=parseInt(s,10)||0;if(a!==null)ba=parseInt(a,10)||0;}catch(e){}updateBestDisplay();}
+function saveBest(){try{localStorage.setItem('aimTrainer_bestScore',bs);localStorage.setItem('aimTrainer_bestAvgReaction',ba);}catch(e){}}
+function updateBestDisplay(){if(bs>0){bestDisplay.textContent=bs+'分';bestDisplay.className='value highlight';}else{bestDisplay.textContent='无';bestDisplay.className='value';}}
+function spawnTarget(){const m=M;const im=Math.random()<MR;tg.x=m+Math.random()*(canvas.width-m*2);tg.y=m+Math.random()*(canvas.height-m*2);tg.type=im?'moving':'static';tg.active=true;tg.st=performance.now();tg.lt=im?ML:SL;tg.al=0;tg.fi=true;tg.ha=false;if(im){const a=Math.random()*Math.PI*2;tg.vx=Math.cos(a)*SP;tg.vy=Math.sin(a)*SP;}else{tg.vx=0;tg.vy=0;}}
+function updateTarget(now){if(!tg.active)return;if(tg.fi){tg.al=Math.min(1,tg.al+0.05);if(tg.al>=1)tg.fi=false;}if(tg.type==='moving'&&tg.active&&!tg.ha){tg.x+=tg.vx;tg.y+=tg.vy;const m=M;if(tg.x<m){tg.x=m;tg.vx=Math.abs(tg.vx);}if(tg.x>canvas.width-m){tg.x=canvas.width-m;tg.vx=-Math.abs(tg.vx);}if(tg.y<m){tg.y=m;tg.vy=Math.abs(tg.vy);}if(tg.y>canvas.height-m){tg.y=canvas.height-m;tg.vy=-Math.abs(tg.vy);}}const el=now-tg.st;if(el>=tg.lt&&tg.active&&!tg.ha){tg.active=false;tm++;playMissSound();updateInfoBar();scheduleNextSpawn();}}
+function scheduleNextSpawn(){if(stm)clearTimeout(stm);if(gs!=='playing')return;stm=setTimeout(()=>{if(gs==='playing')spawnTarget();},SD);}
+function handleCanvasClick(e){if(gs!=='playing')return;const rect=canvas.getBoundingClientRect();const sx=canvas.width/rect.width,sy=canvas.height/rect.height;const cx=(e.clientX-rect.left)*sx,cy=(e.clientY-rect.top)*sy;if(tg.active&&!tg.ha){const dx=cx-tg.x,dy=cy-tg.y;if(Math.sqrt(dx*dx+dy*dy)<=R){const now=performance.now();rt.push(now-tg.st);hi++;sc++;tg.ha=true;tg.hs=now;he.push({x:tg.x,y:tg.y,startTime:now,duration:400,type:'hit'});playHitSound();updateInfoBar();setTimeout(()=>{if(gs==='playing'){tg.active=false;scheduleNextSpawn();}},150);return;}}ec++;he.push({x:cx,y:cy,startTime:performance.now(),duration:300,type:'miss'});playMissSound();updateInfoBar();}
+function updateInfoBar(){scoreDisplay.textContent=sc;const dt=Math.ceil(tl);timeDisplay.textContent=dt;timeDisplay.className='value'+(dt<=5?' time-warn':'');const total=hi+tm;hitRateDisplay.textContent=total>0?Math.round(hi/total*100)+'%':'-';avgReactionDisplay.textContent=rt.length>0?Math.round(rt.reduce((a,b)=>a+b,0)/rt.length)+'ms':'-';}
+function drawBackground(){const g=ctx.createRadialGradient(canvas.width/2,canvas.height/2,0,canvas.width/2,canvas.height/2,canvas.width*0.6);g.addColorStop(0,'#1a0a2e');g.addColorStop(1,'#080812');ctx.fillStyle=g;ctx.fillRect(0,0,canvas.width,canvas.height);ctx.strokeStyle='rgba(0,240,255,0.03)';ctx.lineWidth=0.5;for(let x=0;x<=canvas.width;x+=40){ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,canvas.height);ctx.stroke();}for(let y=0;y<=canvas.height;y+=40){ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(canvas.width,y);ctx.stroke();}ctx.strokeStyle='rgba(255,45,149,0.06)';ctx.lineWidth=1;ctx.setLineDash([6,8]);ctx.beginPath();ctx.moveTo(canvas.width/2,0);ctx.lineTo(canvas.width/2,canvas.height);ctx.stroke();ctx.beginPath();ctx.moveTo(0,canvas.height/2);ctx.lineTo(canvas.width,canvas.height/2);ctx.stroke();ctx.setLineDash([]);}
+function drawTarget(){if(!tg.active&&!tg.ha)return;const{x,y}=tg;const now=performance.now();const al=tg.ha?Math.max(0,1-(now-tg.hs)/300):tg.al;const im=tg.type==='moving';const ih=tg.ha;const gg=ctx.createRadialGradient(x,y,R*0.5,x,y,R*1.5);const gc=im?'rgba(0,240,255,':'rgba(255,45,149,';gg.addColorStop(0,gc+(0.15*al)+')');gg.addColorStop(1,gc+'0)');ctx.fillStyle=gg;ctx.beginPath();ctx.arc(x,y,R*1.5,0,Math.PI*2);ctx.fill();ctx.beginPath();ctx.arc(x,y,R,0,Math.PI*2);ctx.fillStyle=im?'rgba(0,240,255,'+(0.25*al)+')':'rgba(255,45,149,'+(0.25*al)+')';ctx.fill();ctx.strokeStyle=im?'rgba(0,240,255,'+(0.5*al)+')':'rgba(255,45,149,'+(0.5*al)+')';ctx.lineWidth=1.5;ctx.stroke();ctx.beginPath();ctx.arc(x,y,18,0,Math.PI*2);ctx.fillStyle='rgba(255,255,255,'+(0.5*al)+')';ctx.fill();ctx.strokeStyle='rgba(255,255,255,'+(0.3*al)+')';ctx.lineWidth=1;ctx.stroke();ctx.beginPath();ctx.arc(x,y,11,0,Math.PI*2);ctx.fillStyle=im?'rgba(0,240,255,'+(0.9*al)+')':'rgba(255,45,149,'+(0.9*al)+')';ctx.fill();ctx.strokeStyle=im?'rgba(0,240,255,'+(0.6*al)+')':'rgba(255,45,149,'+(0.6*al)+')';ctx.lineWidth=1;ctx.stroke();ctx.beginPath();ctx.arc(x,y,4,0,Math.PI*2);ctx.fillStyle='rgba(255,255,255,'+(0.95*al)+')';ctx.fill();if(im&&!ih&&tg.active){const a=Math.atan2(tg.vy,tg.vx);const d=R+12;ctx.save();ctx.translate(x+Math.cos(a)*d,y+Math.sin(a)*d);ctx.rotate(a);ctx.fillStyle='rgba(0,240,255,'+(0.6*al)+')';ctx.beginPath();ctx.moveTo(6,0);ctx.lineTo(-3,-4);ctx.lineTo(-3,4);ctx.closePath();ctx.fill();ctx.restore();}if(ih){const p=(now-tg.hs)/300;const rr=R+p*60,aa=Math.max(0,1-p);ctx.beginPath();ctx.arc(x,y,rr,0,Math.PI*2);ctx.strokeStyle='rgba(0,240,255,'+(aa*0.8)+')';ctx.lineWidth=2.5;ctx.stroke();}}
+function drawHitEffects(){const now=performance.now();he=he.filter(e=>now-e.startTime<e.duration);for(const e of he){const p=(now-e.startTime)/e.duration,a=Math.max(0,1-p);if(e.type==='hit'){const r=10+p*50;ctx.beginPath();ctx.arc(e.x,e.y,r,0,Math.PI*2);ctx.strokeStyle='rgba(255,45,149,'+(a*0.6)+')';ctx.lineWidth=2;ctx.stroke();for(let i=0;i<6;i++){const angle=(i/6)*Math.PI*2+p*2,d=p*35;ctx.beginPath();ctx.arc(e.x+Math.cos(angle)*d,e.y+Math.sin(angle)*d,2,0,Math.PI*2);ctx.fillStyle='rgba(255,45,149,'+(a*0.8)+')';ctx.fill();}}else{const s=6+p*8;ctx.strokeStyle='rgba(0,240,255,'+(a*0.2)+')';ctx.lineWidth=1.5;ctx.beginPath();ctx.moveTo(e.x-s,e.y-s);ctx.lineTo(e.x+s,e.y+s);ctx.stroke();ctx.beginPath();ctx.moveTo(e.x+s,e.y-s);ctx.lineTo(e.x-s,e.y+s);ctx.stroke();}}}
+function drawCrosshair(){if(!mc&&gs!=='playing')return;ctx.save();ctx.strokeStyle='rgba(255,255,255,0.85)';ctx.lineWidth=1.5;ctx.shadowColor='rgba(0,240,255,0.5)';ctx.shadowBlur=6;const g=5,l=14;ctx.beginPath();ctx.moveTo(mx,my-g);ctx.lineTo(mx,my-g-l);ctx.stroke();ctx.beginPath();ctx.moveTo(mx,my+g);ctx.lineTo(mx,my+g+l);ctx.stroke();ctx.beginPath();ctx.moveTo(mx-g,my);ctx.lineTo(mx-g-l,my);ctx.stroke();ctx.beginPath();ctx.moveTo(mx+g,my);ctx.lineTo(mx+g+l,my);ctx.stroke();ctx.shadowBlur=0;ctx.beginPath();ctx.arc(mx,my,1.5,0,Math.PI*2);ctx.fillStyle='rgba(255,255,255,0.85)';ctx.fill();ctx.restore();}
+function render(){ctx.clearRect(0,0,canvas.width,canvas.height);drawBackground();drawHitEffects();drawTarget();if(mc||gs==='playing')drawCrosshair();}
+function gameLoop(){if(gs==='ended'){render();return;}const now=performance.now();if(gs==='playing'){const el=(now-gst)/1000;tl=Math.max(0,st-el);updateInfoBar();if(tl<=0){endGame();return;}updateTarget(now);}render();af=requestAnimationFrame(gameLoop);}
+function startCountdown(){gs='countdown';sc=0;hi=0;tm=0;ec=0;rt=[];he=[];tg.active=false;if(stm)clearTimeout(stm);tl=st;updateInfoBar();let count=3;overlay.classList.remove('hidden');overlayContent.innerHTML='';function showCount(n){overlayContent.innerHTML='<div class="countdown-num">'+(n>0?n:'GO!')+'</div><div class="countdown-label">'+(n>0?'做好准备...':'')+'</div>';if(n>0)playCountdownBeep();else playStartBeep();}showCount(3);ct=setInterval(()=>{count--;if(count>0)showCount(count);else if(count===0)showCount(0);else{clearInterval(ct);ct=null;overlay.classList.add('hidden');gs='playing';gst=performance.now();tg.active=false;scheduleNextSpawn();af=requestAnimationFrame(gameLoop);}},800);}
+function endGame(){gs='ended';if(af){cancelAnimationFrame(af);af=null;}if(stm){clearTimeout(stm);stm=null;}tg.active=false;const total=hi+tm;const hr=total>0?Math.round(hi/total*100):0;const ar=rt.length>0?Math.round(rt.reduce((a,b)=>a+b,0)/rt.length*10)/10:0;const fr=rt.length>0?Math.min(...rt):0;const frD=fr>0?Math.round(fr*10)/10:0;let nb=false;if(sc>bs){bs=sc;nb=true;}if(ar>0&&(ba===0||ar<ba)){ba=ar;nb=true;}if(nb){saveBest();updateBestDisplay();}render();const bt=bs>0?bs+' 分':'无';const ba2=ba>0?ba+'ms':'无';overlayContent.innerHTML='<h2 style="font-size:24px;margin-bottom:4px;">🎯 训练结束!</h2><p style="font-size:13px;color:rgba(255,255,255,0.5);margin-bottom:12px;">'+st+'秒模式 · '+(hi+tm)+' 个靶子</p><div class="result-grid"><div class="result-item"><div class="result-label">🎯 得分</div><div class="result-value gold">'+sc+'</div></div><div class="result-item"><div class="result-label">✅ 命中</div><div class="result-value green">'+hi+'</div></div><div class="result-item"><div class="result-label">⏰ 漏靶</div><div class="result-value red">'+tm+'</div></div><div class="result-item"><div class="result-label">🔫 空枪</div><div class="result-value blue">'+ec+'</div></div><div class="result-item"><div class="result-label">📊 命中率</div><div class="result-value green">'+hr+'%</div></div><div class="result-item"><div class="result-label">⚡ 平均反应</div><div class="result-value orange">'+(ar>0?ar+'ms':'-')+'</div></div><div class="result-item"><div class="result-label">🚀 最快反应</div><div class="result-value purple">'+(fr>0?frD+'ms':'-')+'</div></div><div class="result-item"><div class="result-label">🏆 最佳得分</div><div class="result-value gold">'+bt+'</div></div></div><div class="result-best"><span class="best-label">🏆 最佳平均反应时间</span><span class="best-value">'+ba2+'</span></div><button class="btn-primary" id="btnRestart">再来一次</button>';overlay.classList.remove('hidden');const btnR=document.getElementById('btnRestart');if(btnR)btnR.addEventListener('click',()=>startCountdown());}
+canvas.addEventListener('click',handleCanvasClick);
+canvas.addEventListener('mousemove',(e)=>{const rect=canvas.getBoundingClientRect();mx=(e.clientX-rect.left)*(canvas.width/rect.width);my=(e.clientY-rect.top)*(canvas.height/rect.height);mc=true;});
+canvas.addEventListener('mouseenter',()=>{mc=true;});
+canvas.addEventListener('mouseleave',()=>{mc=false;});
+canvas.addEventListener('touchstart',(e)=>{e.preventDefault();if(gs!=='playing')return;const t=e.touches[0],rect=canvas.getBoundingClientRect();mx=(t.clientX-rect.left)*(canvas.width/rect.width);my=(t.clientY-rect.top)*(canvas.height/rect.height);mc=true;const ce=new MouseEvent('click',{clientX:t.clientX,clientY:t.clientY});canvas.dispatchEvent(ce);},{passive:false});
+modeBtns.forEach(btn=>{btn.addEventListener('click',()=>{if(gs==='playing'||gs==='countdown')return;modeBtns.forEach(b=>b.classList.remove('active'));btn.classList.add('active');st=parseInt(btn.dataset.time,10);tl=st;timeDisplay.textContent=st;timeDisplay.className='value';});});
+btnStart.addEventListener('click',()=>{initAudio();startCountdown();});
+loadBest();tl=st;timeDisplay.textContent=st;scoreDisplay.textContent='0';hitRateDisplay.textContent='-';avgReactionDisplay.textContent='-';render();
+    </script>
+</body>
+</html>

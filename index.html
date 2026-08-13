@@ -5,28 +5,27 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>小工具集合</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background: linear-gradient(135deg, #d1e79d 0%, #51d1e7 100%);
             display: flex;
-            justify-content: center;
+            flex-direction: column;
             align-items: center;
             min-height: 100vh;
         }
         .container {
             background-color: white;
-            padding: 40px;
+            padding: 40px 40px 0;
             border-radius: 16px;
             box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-            max-width: 800px;
+            max-width: 960px;
             width: 100%;
             text-align: center;
             backdrop-filter: blur(10px);
+            display: flex;
+            flex-direction: column;
+            flex: 1;
         }
         h1 {
             color: #333;
@@ -40,7 +39,7 @@
         }
         .tools-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
             gap: 25px;
             margin-top: 30px;
         }
@@ -85,20 +84,15 @@
             transform: translateY(-2px);
             box-shadow: 0 6px 16px rgba(102, 126, 234, 0.4);
         }
+        .main-content {
+            flex: 1;
+        }
         .footer {
-            margin-top: 40px;
+            margin-top: auto;
             font-size: 14px;
             color: #999;
-            padding-top: 20px;
-            border-top: 1px solid #e0e0e0;
-        }
-        @media (max-width: 768px) {
-            .container {
-                padding: 20px;
-            }
-            .tools-grid {
-                grid-template-columns: 1fr;
-            }
+            padding: 40px 0 40px;
+            
         }
         .section-divider {
             display: flex;
@@ -120,68 +114,76 @@
             color: #764ba2;
             white-space: nowrap;
         }
-        
-</style>
+        @media (max-width: 768px) {
+            .container { padding: 20px 20px 0; }
+            .tools-grid { grid-template-columns: 1fr; }
+            .footer { padding: 30px 0 30px; }
+        }
+    </style>
 </head>
 <body>
     <div class="container">
-                <h1>KingStrong小工具集合</h1>
-        
-        <div class="section-divider">
-            <span class="section-label">🔧 工具类</span>
-        </div>
+        <div class="main-content">
+            <h1>KingStrong小工具集合</h1>
 
-        <div class="tools-grid">
-            <div class="tool-card">
-                <h2>时间戳转化工具</h2>
-                <p>将时间戳转化为年月日时分，或将年月日时分转化为时间戳</p>
-                <a href="tools/timestamp-converter.html">使用工具</a>
-            </div>
-            
-            <div class="tool-card">
-                <h2>单位换算小工具</h2>
-                <p>提供长度、质量、功率、热量、速度等常用单位之间的换算</p>
-                <a href="tools/unit-converter.html">使用工具</a>
+            <div class="section-divider">
+                <span class="section-label">🔧 工具类</span>
             </div>
 
-        </div>
-        
-        <div class="section-divider">
-            <span class="section-label">🎮 游戏类</span>
-        </div>
-        
-        <div class="tools-grid">
-            <div class="tool-card">
-                <h2>扫雷游戏</h2>
-                <p>经典扫雷游戏，支持多种难度级别，挑战你的逻辑思维和反应能力</p>
-                <a href="games/minesweeper.html">使用工具</a>
-            </div>
-            
-            <div class="tool-card">
-                <h2>数独游戏</h2>
-                <p>9×9标准数独游戏，支持多种难度，挑战你的逻辑推理能力</p>
-                <a href="games/sudoku.html">使用工具</a>
-            </div>
-            
-            <div class="tool-card">
-                <h2>消消乐</h2>
-                <p>经典的三消游戏，点击相邻的两个元素进行交换，消除三个或以上相同颜色的元素，获得分数</p>
-                <a href="games/match-three.html">使用工具</a>
+            <div class="tools-grid">
+                <div class="tool-card">
+                    <h2>时间戳转化工具</h2>
+                    <p>将时间戳转化为年月日时分，或将年月日时分转化为时间戳</p>
+                    <a href="tools/timestamp-converter.html">使用工具</a>
+                </div>
+
+                <div class="tool-card">
+                    <h2>单位换算小工具</h2>
+                    <p>提供长度、质量、功率、热量、速度等常用单位之间的换算</p>
+                    <a href="tools/unit-converter.html">使用工具</a>
+                </div>
             </div>
 
-            <div class="tool-card">
-                <h2>贪吃蛇</h2>
-                <p>经典贪吃蛇游戏，方向键操控，支持暂停/继续、多档速度调节，自动保存最高分</p>
-                <a href="games/snake.html">使用工具</a>
+            <div class="section-divider">
+                <span class="section-label">🎮 游戏类</span>
             </div>
 
+            <div class="tools-grid">
+                <div class="tool-card">
+                    <h2>FPS 打靶训练</h2>
+                    <p>限时打靶训练，混合静态靶与移动靶，十字准星瞄准，记录命中率与反应时间</p>
+                    <a href="games/aim-trainer.html">开始训练</a>
+                </div>
+
+                <div class="tool-card">
+                    <h2>数独游戏</h2>
+                    <p>9×9标准数独游戏，支持多种难度，挑战你的逻辑推理能力</p>
+                    <a href="games/sudoku.html">使用工具</a>
+                </div>
+
+                <div class="tool-card">
+                    <h2>扫雷游戏</h2>
+                    <p>经典扫雷游戏，支持多种难度级别，挑战你的逻辑思维和反应能力</p>
+                    <a href="games/minesweeper.html">使用工具</a>
+                </div>
+
+                <div class="tool-card">
+                    <h2>消消乐</h2>
+                    <p>经典的三消游戏，点击相邻的两个元素进行交换，消除三个或以上相同颜色的元素，获得分数</p>
+                    <a href="games/match-three.html">使用工具</a>
+                </div>
+
+                <div class="tool-card">
+                    <h2>贪吃蛇</h2>
+                    <p>经典贪吃蛇游戏，方向键操控，支持暂停/继续、多档速度调节，自动保存最高分</p>
+                    <a href="games/snake.html">使用工具</a>
+                </div>
+            </div>
         </div>
-        
+
         <div class="footer">
             <p>© KingStrong</p>
         </div>
     </div>
 </body>
 </html>
-<!-- 这是一个演示改动 - 2026年8月13日 -->
-
