@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>时间戳转化工具</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+        .container {
+            background-color: white;
+            padding: 40px;
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            max-width: 500px;
+            width: 100%;
+            backdrop-filter: blur(10px);
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 30px;
+            font-weight: 600;
+            font-size: 28px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .section {
+            margin-bottom: 30px;
+            padding: 20px;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        }
+        h2 {
+            font-size: 18px;
+            color: #666;
+            margin-bottom: 15px;
+            font-weight: 500;
+        }
+        input[type="text"], input[type="number"], input[type="date"], input[type="time"] {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+        input[type="text"]:focus, input[type="number"]:focus, input[type="date"]:focus, input[type="time"]:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+        .date-time-inputs {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+        .date-time-inputs input {
+            flex: 1;
+        }
+        button {
+            width: 100%;
+            padding: 12px 24px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+        }
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(102, 126, 234, 0.4);
+        }
+        .result {
+            margin-top: 15px;
+            padding: 15px;
+            background-color: white;
+            border-radius: 8px;
+            border: 2px solid #e0e0e0;
+            word-wrap: break-word;
+            font-size: 16px;
+            font-weight: 500;
+            color: #333;
+        }
+        .back-link {
+            display: block;
+            text-align: center;
+            margin-top: 30px;
+            color: #667eea;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+            padding: 10px 20px;
+            border: 2px solid #667eea;
+            border-radius: 25px;
+            transition: all 0.3s ease;
+        }
+        .back-link:hover {
+            background-color: #667eea;
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+        }
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+            }
+            .date-time-inputs {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>时间戳转化工具</h1>
+        
+        <!-- 时间戳转日期时间 -->
+        <div class="section">
+            <h2>时间戳转日期时间</h2>
+            <input type="number" id="timestamp" placeholder="输入时间戳（秒）">
+            <button onclick="convertTimestampToDateTime()">转化</button>
+            <div class="result" id="dateTimeResult"></div>
+        </div>
+        
+        <!-- 日期时间转时间戳 -->
+        <div class="section">
+            <h2>日期时间转时间戳</h2>
+            <div class="date-time-inputs">
+                <input type="date" id="date">
+                <input type="time" id="time">
+            </div>
+            <button onclick="convertDateTimeToTimestamp()">转化</button>
+            <div class="result" id="timestampResult"></div>
+        </div>
+        
+        <a href="index.html" class="back-link">返回主页</a>
+    </div>
+    
+    <script>
+        function convertTimestampToDateTime() {
+            const timestamp = document.getElementById('timestamp').value;
+            if (!timestamp) {
+                document.getElementById('dateTimeResult').textContent = '请输入时间戳';
+                return;
+            }
+            
+            const date = new Date(parseInt(timestamp) * 1000);
+            const year = date.getFullYear();
+            const month = String(date.getMonth() + 1).padStart(2, '0');
+            const day = String(date.getDate()).padStart(2, '0');
+            const hours = String(date.getHours()).padStart(2, '0');
+            const minutes = String(date.getMinutes()).padStart(2, '0');
+            const seconds = String(date.getSeconds()).padStart(2, '0');
+            
+            const result = `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+            document.getElementById('dateTimeResult').textContent = result;
+        }
+        
+        function convertDateTimeToTimestamp() {
+            const dateInput = document.getElementById('date').value;
+            const timeInput = document.getElementById('time').value;
+            
+            if (!dateInput || !timeInput) {
+                document.getElementById('timestampResult').textContent = '请选择日期和时间';
+                return;
+            }
+            
+            const dateTimeString = `${dateInput} ${timeInput}`;
+            const timestamp = Math.floor(new Date(dateTimeString).getTime() / 1000);
+            document.getElementById('timestampResult').textContent = timestamp;
+        }
+        
+        // 初始化当前日期时间
+        function initDateTime() {
+            const now = new Date();
+            const year = now.getFullYear();
+            const month = String(now.getMonth() + 1).padStart(2, '0');
+            const day = String(now.getDate()).padStart(2, '0');
+            const hours = String(now.getHours()).padStart(2, '0');
+            const minutes = String(now.getMinutes()).padStart(2, '0');
+            
+            document.getElementById('date').value = `${year}-${month}-${day}`;
+            document.getElementById('time').value = `${hours}:${minutes}`;
+        }
+        
+        // 页面加载时初始化
+        window.onload = initDateTime;
+    </script>
+</body>
+</html>
