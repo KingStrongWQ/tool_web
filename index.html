@@ -100,12 +100,37 @@
                 grid-template-columns: 1fr;
             }
         }
-    </style>
+        .section-divider {
+            display: flex;
+            align-items: center;
+            margin: 40px 0 20px;
+            gap: 16px;
+        }
+        .section-divider::before,
+        .section-divider::after {
+            content: '';
+            flex: 1;
+            height: 2px;
+            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+            border-radius: 1px;
+        }
+        .section-divider .section-label {
+            font-size: 18px;
+            font-weight: 600;
+            color: #764ba2;
+            white-space: nowrap;
+        }
+        
+</style>
 </head>
 <body>
     <div class="container">
-        <h1>KingStrong小工具集合</h1>
+                <h1>KingStrong小工具集合</h1>
         
+        <div class="section-divider">
+            <span class="section-label">🔧 工具类</span>
+        </div>
+
         <div class="tools-grid">
             <div class="tool-card">
                 <h2>时间戳转化工具</h2>
@@ -118,13 +143,14 @@
                 <p>提供长度、质量、功率、热量、速度等常用单位之间的换算</p>
                 <a href="tools/unit-converter.html">使用工具</a>
             </div>
-            
-            <div class="tool-card">
-                <h2>工作时间轴</h2>
-                <p>以进度条方式展示工作时间，实时显示当前时间位置和状态</p>
-                <a href="tools/work-timeline.html">使用工具</a>
-            </div>
-            
+
+        </div>
+        
+        <div class="section-divider">
+            <span class="section-label">🎮 游戏类</span>
+        </div>
+        
+        <div class="tools-grid">
             <div class="tool-card">
                 <h2>扫雷游戏</h2>
                 <p>经典扫雷游戏，支持多种难度级别，挑战你的逻辑思维和反应能力</p>
@@ -149,11 +175,6 @@
                 <a href="games/snake.html">使用工具</a>
             </div>
 
-            <div class="tool-card">
-                <h2>是男人就下100层</h2>
-                <p>经典下落闯关游戏，左右操控人物躲避尖刺，层数递增难度升级，挑战极限深度</p>
-                <a href="games/100floors.html">使用工具</a>
-            </div>
         </div>
         
         <div class="footer">
