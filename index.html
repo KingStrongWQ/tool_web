@@ -8,91 +8,215 @@
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #d1e79d 0%, #51d1e7 100%);
+            background: #fafafa;
             display: flex;
             flex-direction: column;
             align-items: center;
             min-height: 100vh;
+            padding: 30px 20px;
         }
         .container {
             background-color: white;
             padding: 40px 40px 0;
-            border-radius: 16px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            border-radius: 20px;
+            box-shadow: 0 4px 24px rgba(0,0,0,0.06);
             max-width: 960px;
             width: 100%;
             text-align: center;
-            backdrop-filter: blur(10px);
             display: flex;
             flex-direction: column;
             flex: 1;
         }
         h1 {
-            color: #333;
-            margin-bottom: 30px;
+            margin-bottom: 10px;
             font-size: 32px;
-            font-weight: 600;
+            font-weight: 700;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
         }
+        .subtitle {
+            font-size: 14px;
+            color: #999;
+            margin-bottom: 30px;
+        }
         .tools-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-            gap: 25px;
-            margin-top: 30px;
+            gap: 24px;
+            margin-top: 24px;
         }
         .tool-card {
-            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-            padding: 35px 25px;
-            border-radius: 12px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-            transition: all 0.3s ease;
+            padding: 30px 24px;
+            border-radius: 16px;
             border: 2px solid transparent;
+            transition: all 0.3s ease;
+            text-align: left;
         }
         .tool-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
-            border-color: #667eea;
+            transform: translateY(-6px);
+        }
+        .tool-icon {
+            font-size: 36px;
+            line-height: 1;
+            margin-bottom: 14px;
         }
         .tool-card h2 {
-            font-size: 20px;
-            color: #333;
-            margin-bottom: 15px;
-            font-weight: 600;
+            font-size: 18px;
+            color: #1f2937;
+            margin-bottom: 10px;
+            font-weight: 700;
         }
         .tool-card p {
-            font-size: 14px;
-            color: #666;
+            font-size: 13px;
+            color: #6b7280;
             margin-bottom: 20px;
-            line-height: 1.5;
+            line-height: 1.6;
         }
-        .tool-card a {
+        .tool-btn {
             display: inline-block;
-            padding: 12px 24px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 10px 22px;
             color: white;
             text-decoration: none;
             border-radius: 8px;
-            font-size: 14px;
-            font-weight: 500;
+            font-size: 13px;
+            font-weight: 600;
             transition: all 0.3s ease;
-            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
         }
-        .tool-card a:hover {
+        .tool-btn:hover {
             transform: translateY(-2px);
-            box-shadow: 0 6px 16px rgba(102, 126, 234, 0.4);
         }
+        /* 卡片配色 - 工具类 */
+        .card-blue {
+            background: linear-gradient(135deg, #e0f2fe 0%, #bae6fd 100%);
+        }
+        .card-blue:hover {
+            border-color: #3b82f6;
+            box-shadow: 0 10px 24px rgba(59, 130, 246, 0.25);
+        }
+        .card-blue .tool-btn {
+            background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+        }
+        .card-blue .tool-btn:hover {
+            box-shadow: 0 6px 16px rgba(59, 130, 246, 0.4);
+        }
+
+        .card-green {
+            background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%);
+        }
+        .card-green:hover {
+            border-color: #10b981;
+            box-shadow: 0 10px 24px rgba(16, 185, 129, 0.25);
+        }
+        .card-green .tool-btn {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+        }
+        .card-green .tool-btn:hover {
+            box-shadow: 0 6px 16px rgba(16, 185, 129, 0.4);
+        }
+
+        .card-amber {
+            background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+        }
+        .card-amber:hover {
+            border-color: #f59e0b;
+            box-shadow: 0 10px 24px rgba(245, 158, 11, 0.25);
+        }
+        .card-amber .tool-btn {
+            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+            box-shadow: 0 4px 12px rgba(245, 158, 11, 0.3);
+        }
+        .card-amber .tool-btn:hover {
+            box-shadow: 0 6px 16px rgba(245, 158, 11, 0.4);
+        }
+
+        /* 卡片配色 - 游戏类 */
+        .card-red {
+            background: linear-gradient(135deg, #ffe4e6 0%, #fecdd3 100%);
+        }
+        .card-red:hover {
+            border-color: #ef4444;
+            box-shadow: 0 10px 24px rgba(239, 68, 68, 0.25);
+        }
+        .card-red .tool-btn {
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+            box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
+        }
+        .card-red .tool-btn:hover {
+            box-shadow: 0 6px 16px rgba(239, 68, 68, 0.4);
+        }
+
+        .card-purple {
+            background: linear-gradient(135deg, #f3e8ff 0%, #e9d5ff 100%);
+        }
+        .card-purple:hover {
+            border-color: #8b5cf6;
+            box-shadow: 0 10px 24px rgba(139, 92, 246, 0.25);
+        }
+        .card-purple .tool-btn {
+            background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
+            box-shadow: 0 4px 12px rgba(139, 92, 246, 0.3);
+        }
+        .card-purple .tool-btn:hover {
+            box-shadow: 0 6px 16px rgba(139, 92, 246, 0.4);
+        }
+
+        .card-slate {
+            background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%);
+        }
+        .card-slate:hover {
+            border-color: #64748b;
+            box-shadow: 0 10px 24px rgba(100, 116, 139, 0.25);
+        }
+        .card-slate .tool-btn {
+            background: linear-gradient(135deg, #64748b 0%, #475569 100%);
+            box-shadow: 0 4px 12px rgba(100, 116, 139, 0.3);
+        }
+        .card-slate .tool-btn:hover {
+            box-shadow: 0 6px 16px rgba(100, 116, 139, 0.4);
+        }
+
+        .card-pink {
+            background: linear-gradient(135deg, #fce7f3 0%, #fbcfe8 100%);
+        }
+        .card-pink:hover {
+            border-color: #ec4899;
+            box-shadow: 0 10px 24px rgba(236, 72, 153, 0.25);
+        }
+        .card-pink .tool-btn {
+            background: linear-gradient(135deg, #ec4899 0%, #db2777 100%);
+            box-shadow: 0 4px 12px rgba(236, 72, 153, 0.3);
+        }
+        .card-pink .tool-btn:hover {
+            box-shadow: 0 6px 16px rgba(236, 72, 153, 0.4);
+        }
+
+        .card-teal {
+            background: linear-gradient(135deg, #ccfbf1 0%, #99f6e4 100%);
+        }
+        .card-teal:hover {
+            border-color: #14b8a6;
+            box-shadow: 0 10px 24px rgba(20, 184, 166, 0.25);
+        }
+        .card-teal .tool-btn {
+            background: linear-gradient(135deg, #14b8a6 0%, #0d9488 100%);
+            box-shadow: 0 4px 12px rgba(20, 184, 166, 0.3);
+        }
+        .card-teal .tool-btn:hover {
+            box-shadow: 0 6px 16px rgba(20, 184, 166, 0.4);
+        }
+
         .main-content {
             flex: 1;
         }
         .footer {
             margin-top: auto;
             font-size: 14px;
-            color: #999;
+            color: #bbb;
             padding: 40px 0 40px;
-            
         }
         .section-divider {
             display: flex;
@@ -104,18 +228,20 @@
         .section-divider::after {
             content: '';
             flex: 1;
-            height: 2px;
-            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+            height: 1px;
+            background: #e5e7eb;
             border-radius: 1px;
         }
         .section-divider .section-label {
-            font-size: 18px;
+            font-size: 16px;
             font-weight: 600;
-            color: #764ba2;
+            color: #9ca3af;
             white-space: nowrap;
+            letter-spacing: 1px;
         }
         @media (max-width: 768px) {
-            .container { padding: 20px 20px 0; }
+            body { padding: 16px; }
+            .container { padding: 24px 20px 0; }
             .tools-grid { grid-template-columns: 1fr; }
             .footer { padding: 30px 0 30px; }
         }
@@ -124,23 +250,33 @@
 <body>
     <div class="container">
         <div class="main-content">
-            <h1>KingStrong小工具集合</h1>
+            <h1>KingStrong</h1>
+            <p class="subtitle">小工具 · 小游戏 合集</p>
 
             <div class="section-divider">
                 <span class="section-label">🔧 工具类</span>
             </div>
 
             <div class="tools-grid">
-                <div class="tool-card">
+                <div class="tool-card card-blue">
+                    <div class="tool-icon">⏰</div>
                     <h2>时间戳转化工具</h2>
                     <p>将时间戳转化为年月日时分，或将年月日时分转化为时间戳</p>
-                    <a href="tools/timestamp-converter.html">使用工具</a>
+                    <a href="tools/timestamp-converter.html" class="tool-btn">使用工具</a>
                 </div>
 
-                <div class="tool-card">
+                <div class="tool-card card-green">
+                    <div class="tool-icon">📐</div>
                     <h2>单位换算小工具</h2>
                     <p>提供长度、质量、功率、热量、速度等常用单位之间的换算</p>
-                    <a href="tools/unit-converter.html">使用工具</a>
+                    <a href="tools/unit-converter.html" class="tool-btn">使用工具</a>
+                </div>
+
+                <div class="tool-card card-amber">
+                    <div class="tool-icon">💰</div>
+                    <h2>复利计算器</h2>
+                    <p>输入本金、年化收益率、投资年数和每年追加投资，计算逐年复利收益明细</p>
+                    <a href="tools/compound-interest.html" class="tool-btn">使用工具</a>
                 </div>
             </div>
 
@@ -149,40 +285,45 @@
             </div>
 
             <div class="tools-grid">
-                <div class="tool-card">
+                <div class="tool-card card-red">
+                    <div class="tool-icon">🎯</div>
                     <h2>FPS 打靶训练</h2>
                     <p>限时打靶训练，混合静态靶与移动靶，十字准星瞄准，记录命中率与反应时间</p>
-                    <a href="games/aim-trainer.html">开始训练</a>
+                    <a href="games/aim-trainer.html" class="tool-btn">开始训练</a>
                 </div>
 
-                <div class="tool-card">
+                <div class="tool-card card-purple">
+                    <div class="tool-icon">🧩</div>
                     <h2>数独游戏</h2>
                     <p>9×9标准数独游戏，支持多种难度，挑战你的逻辑推理能力</p>
-                    <a href="games/sudoku.html">使用工具</a>
+                    <a href="games/sudoku.html" class="tool-btn">开始游戏</a>
                 </div>
 
-                <div class="tool-card">
+                <div class="tool-card card-slate">
+                    <div class="tool-icon">💣</div>
                     <h2>扫雷游戏</h2>
                     <p>经典扫雷游戏，支持多种难度级别，挑战你的逻辑思维和反应能力</p>
-                    <a href="games/minesweeper.html">使用工具</a>
+                    <a href="games/minesweeper.html" class="tool-btn">开始游戏</a>
                 </div>
 
-                <div class="tool-card">
+                <div class="tool-card card-pink">
+                    <div class="tool-icon">🍬</div>
                     <h2>消消乐</h2>
-                    <p>经典的三消游戏，点击相邻的两个元素进行交换，消除三个或以上相同颜色的元素，获得分数</p>
-                    <a href="games/match-three.html">使用工具</a>
+                    <p>经典的三消游戏，点击相邻的两个元素进行交换，消除三个或以上相同颜色的元素</p>
+                    <a href="games/match-three.html" class="tool-btn">开始游戏</a>
                 </div>
 
-                <div class="tool-card">
+                <div class="tool-card card-teal">
+                    <div class="tool-icon">🐍</div>
                     <h2>贪吃蛇</h2>
                     <p>经典贪吃蛇游戏，方向键操控，支持暂停/继续、多档速度调节，自动保存最高分</p>
-                    <a href="games/snake.html">使用工具</a>
+                    <a href="games/snake.html" class="tool-btn">开始游戏</a>
                 </div>
             </div>
         </div>
 
         <div class="footer">
-            <p>© KingStrong</p>
+            <p>&copy; KingStrong</p>
         </div>
     </div>
 </body>

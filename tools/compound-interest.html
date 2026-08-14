@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>复利计算器</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            min-height: 100vh;
+            padding: 40px 20px;
+        }
+        .container {
+            background-color: white;
+            padding: 40px;
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            max-width: 800px;
+            width: 100%;
+            backdrop-filter: blur(10px);
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 30px;
+            font-weight: 600;
+            font-size: 28px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .section {
+            margin-bottom: 30px;
+            padding: 20px;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        }
+        h2 {
+            font-size: 18px;
+            color: #666;
+            margin-bottom: 15px;
+            font-weight: 500;
+        }
+        .input-group {
+            margin-bottom: 15px;
+        }
+        .input-group label {
+            display: block;
+            font-size: 14px;
+            color: #555;
+            margin-bottom: 6px;
+            font-weight: 500;
+        }
+        .input-group input {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+        .input-group input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+        .input-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+        .btn-calculate {
+            display: block;
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+        }
+        .btn-calculate:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(102, 126, 234, 0.4);
+        }
+        .btn-calculate:active {
+            transform: translateY(0);
+        }
+        .result-section {
+            overflow-x: auto;
+        }
+        .result-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 14px;
+        }
+        .result-table thead th {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 12px 10px;
+            text-align: right;
+            font-weight: 500;
+            white-space: nowrap;
+        }
+        .result-table thead th:first-child {
+            text-align: center;
+            border-radius: 8px 0 0 0;
+        }
+        .result-table thead th:last-child {
+            border-radius: 0 8px 0 0;
+        }
+        .result-table tbody td {
+            padding: 10px;
+            text-align: right;
+            border-bottom: 1px solid #eee;
+            color: #333;
+        }
+        .result-table tbody td:first-child {
+            text-align: center;
+            font-weight: 600;
+            color: #667eea;
+        }
+        .result-table tbody tr:hover {
+            background-color: #f8f9ff;
+        }
+        .result-table tbody tr:last-child td {
+            font-weight: 600;
+            background-color: #f0f0ff;
+        }
+        .result-table tbody tr:last-child td:first-child {
+            border-radius: 0 0 0 8px;
+        }
+        .result-table tbody tr:last-child td:last-child {
+            border-radius: 0 0 8px 0;
+        }
+        .summary {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+            margin-bottom: 20px;
+        }
+        .summary-item {
+            background: white;
+            padding: 16px;
+            border-radius: 8px;
+            text-align: center;
+            border: 2px solid #e0e0e0;
+        }
+        .summary-item .label {
+            font-size: 13px;
+            color: #888;
+            margin-bottom: 6px;
+        }
+        .summary-item .value {
+            font-size: 20px;
+            font-weight: 600;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .back-link {
+            display: block;
+            text-align: center;
+            margin-top: 30px;
+            color: #667eea;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+            padding: 10px 20px;
+            border: 2px solid #667eea;
+            border-radius: 25px;
+            transition: all 0.3s ease;
+        }
+        .back-link:hover {
+            background-color: #667eea;
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+        }
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+            }
+            .input-row {
+                grid-template-columns: 1fr;
+            }
+            .summary {
+                grid-template-columns: 1fr;
+            }
+            .result-table {
+                font-size: 13px;
+            }
+            .result-table thead th,
+            .result-table tbody td {
+                padding: 8px 6px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>复利计算器</h1>
+
+        <div class="section">
+            <h2>输入参数</h2>
+            <div class="input-row">
+                <div class="input-group">
+                    <label for="principal">本金（元）</label>
+                    <input type="number" id="principal" placeholder="例如：100000" min="0" step="1000">
+                </div>
+                <div class="input-group">
+                    <label for="rate">预期年化收益率（%）</label>
+                    <input type="number" id="rate" placeholder="例如：5" min="0" max="100" step="0.1">
+                </div>
+            </div>
+            <div class="input-row">
+                <div class="input-group">
+                    <label for="years">投资年数</label>
+                    <input type="number" id="years" placeholder="例如：10" min="1" max="100" step="1">
+                </div>
+                <div class="input-group">
+                    <label for="annualAdd">每年追加投资（元）</label>
+                    <input type="number" id="annualAdd" placeholder="例如：12000" min="0" step="1000">
+                </div>
+            </div>
+            <button class="btn-calculate" onclick="calculate()">开始计算</button>
+        </div>
+
+        <div class="section result-section" id="resultSection" style="display:none;">
+            <h2>计算结果</h2>
+            <div class="summary">
+                <div class="summary-item">
+                    <div class="label">总投入金额</div>
+                    <div class="value" id="totalInvested">0</div>
+                </div>
+                <div class="summary-item">
+                    <div class="label">总收益金额</div>
+                    <div class="value" id="totalEarnings">0</div>
+                </div>
+                <div class="summary-item">
+                    <div class="label">最终总金额</div>
+                    <div class="value" id="finalTotal">0</div>
+                </div>
+            </div>
+            <table class="result-table">
+                <thead>
+                    <tr>
+                        <th>年份</th>
+                        <th>年初本金</th>
+                        <th>当年收益</th>
+                        <th>追加投资</th>
+                        <th>年末总金额</th>
+                    </tr>
+                </thead>
+                <tbody id="resultBody">
+                </tbody>
+            </table>
+        </div>
+
+        <a href="../index.html" class="back-link">返回主页</a>
+    </div>
+
+    <script>
+        function calculate() {
+            var principal = parseFloat(document.getElementById('principal').value) || 0;
+            var rate = (parseFloat(document.getElementById('rate').value) || 0) / 100;
+            var years = parseInt(document.getElementById('years').value) || 0;
+            var annualAdd = parseFloat(document.getElementById('annualAdd').value) || 0;
+
+            if (principal <= 0 && annualAdd <= 0) {
+                alert('请输入本金或每年追加投资金额');
+                return;
+            }
+            if (years <= 0) {
+                alert('请输入有效的投资年数');
+                return;
+            }
+            if (rate <= 0) {
+                alert('请输入有效的预期年化收益率');
+                return;
+            }
+
+            var currentAmount = principal;
+            var totalInvested = principal;
+            var totalEarnings = 0;
+            var rows = [];
+
+            for (var year = 1; year <= years; year++) {
+                var startAmount = currentAmount;
+                var earnings = startAmount * rate;
+                currentAmount = startAmount + earnings + annualAdd;
+                totalInvested += annualAdd;
+                totalEarnings += earnings;
+
+                rows.push({
+                    year: year,
+                    startAmount: startAmount,
+                    earnings: earnings,
+                    annualAdd: annualAdd,
+                    endAmount: currentAmount
+                });
+            }
+
+            document.getElementById('totalInvested').textContent = '\u00A5' + totalInvested.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+            document.getElementById('totalEarnings').textContent = '\u00A5' + totalEarnings.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+            document.getElementById('finalTotal').textContent = '\u00A5' + currentAmount.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+
+            var tbody = document.getElementById('resultBody');
+            tbody.innerHTML = '';
+            rows.forEach(function(row) {
+                var tr = document.createElement('tr');
+                tr.innerHTML =
+                    '<td>\u7B2C ' + row.year + ' \u5E74</td>' +
+                    '<td>\u00A5' + row.startAmount.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ',') + '</td>' +
+                    '<td>\u00A5' + row.earnings.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ',') + '</td>' +
+                    '<td>\u00A5' + row.annualAdd.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ',') + '</td>' +
+                    '<td>\u00A5' + row.endAmount.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ',') + '</td>';
+                tbody.appendChild(tr);
+            });
+
+            document.getElementById('resultSection').style.display = 'block';
+        }
+
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') {
+                calculate();
+            }
+        });
+    </script>
+</body>
+</html>
