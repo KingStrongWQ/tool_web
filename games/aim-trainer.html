@@ -30,17 +30,22 @@
             0%,100% { background-position: 0% center; }
             50% { background-position: 100% center; }
         }
-        .mode-selector { display: flex; justify-content: center; gap: 10px; margin-bottom: 12px; }
+        .mode-selector { display: flex; justify-content: center; gap: 10px; margin-bottom: 12px; flex-wrap: wrap; }
         .mode-btn {
             padding: 6px 20px; border: 1px solid rgba(0,240,255,0.15); border-radius: 8px;
             background: rgba(0,240,255,0.04); color: rgba(0,240,255,0.5);
             font-size: 13px; font-weight: 600; cursor: pointer; transition: all 0.3s ease;
         }
         .mode-btn:hover { background: rgba(0,240,255,0.1); color: #00f0ff; }
-        .mode-btn.active {
+        .mode-btn.active-time {
             background: linear-gradient(135deg, #00f0ff, #0088ff);
             border-color: transparent; color: #fff;
             box-shadow: 0 4px 20px rgba(0,240,255,0.25);
+        }
+        .mode-btn.active-extreme {
+            background: linear-gradient(135deg, #00ff87, #00b894);
+            border-color: transparent; color: #fff;
+            box-shadow: 0 4px 20px rgba(0,255,135,0.25);
         }
         .game-info {
             display: flex; justify-content: space-between; align-items: center;
@@ -57,6 +62,7 @@
         }
         .info-item .value.highlight { color: #ffd700; text-shadow: 0 0 10px rgba(255,215,0,0.3); }
         .info-item .value.time-warn { color: #ff2d95; animation: pulse 0.5s ease-in-out infinite alternate; }
+        .info-item .value.green { color: #00ff87; }
         @keyframes pulse { from { opacity: 0.6; } to { opacity: 1; } }
         .canvas-wrapper { position: relative; border-radius: 12px; overflow: hidden; border: 1px solid rgba(0,240,255,0.1); background: #080812; }
         #gameCanvas { display: block; width: 100%; height: auto; aspect-ratio: 8 / 5; cursor: none; touch-action: none; }
@@ -81,18 +87,14 @@
         }
         .countdown-label { font-size: 16px; color: rgba(255,255,255,0.5); margin-top: 4px; }
         .result-grid { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 10px; margin: 16px 0; }
-        .result-item { background: rgba(0,240,255,0.03); border-radius: 10px; padding: 10px 8px; border: 1px solid rgba(0,240,255,0.08); transition: all 0.3s ease; }
+        .result-item { background: rgba(0,240,255,0.03); border-radius: 10px; padding: 10px 8px; border: 1px solid rgba(0,240,255,0.08); }
         .result-item .result-label { font-size: 11px; color: rgba(0,240,255,0.4); margin-bottom: 2px; }
         .result-item .result-value { font-size: 20px; font-weight: 700; font-family: 'Consolas','Courier New',monospace; }
         .result-item .result-value.gold { color: #ffd700; text-shadow: 0 0 8px rgba(255,215,0,0.3); }
         .result-item .result-value.green { color: #00ff87; text-shadow: 0 0 8px rgba(0,255,135,0.3); }
         .result-item .result-value.blue { color: #00f0ff; text-shadow: 0 0 8px rgba(0,240,255,0.3); }
-        .result-item .result-value.red { color: #ff2d95; text-shadow: 0 0 8px rgba(255,45,149,0.3); }
         .result-item .result-value.purple { color: #b537f2; text-shadow: 0 0 8px rgba(181,55,242,0.3); }
         .result-item .result-value.orange { color: #ffd93d; text-shadow: 0 0 8px rgba(255,217,61,0.3); }
-        .result-best { margin: 10px 0 16px; padding: 12px; background: rgba(255,45,149,0.06); border-radius: 10px; border: 1px solid rgba(255,45,149,0.15); }
-        .result-best .best-label { font-size: 11px; color: rgba(255,45,149,0.6); }
-        .result-best .best-value { font-size: 14px; font-weight: 600; color: #ff2d95; text-shadow: 0 0 8px rgba(255,45,149,0.3); font-family: 'Consolas','Courier New',monospace; }
         .btn-primary {
             padding: 12px 36px; border: none; border-radius: 10px;
             background: linear-gradient(135deg, #ff2d95, #b537f2);
@@ -101,6 +103,17 @@
         }
         .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 6px 30px rgba(255,45,149,0.4); }
         .btn-primary:active { transform: translateY(0); }
+        .btn-extreme {
+            background: linear-gradient(135deg, #00ff87, #00b894);
+            box-shadow: 0 4px 25px rgba(0,255,135,0.3);
+        }
+        .btn-extreme:hover { box-shadow: 0 6px 30px rgba(0,255,135,0.4); }
+        .back-link {
+            display: inline-block; margin-top: 16px; padding: 8px 24px;
+            color: rgba(0,240,255,0.4); text-decoration: none; font-size: 13px; font-weight: 500;
+            border: 1px solid rgba(0,240,255,0.15); border-radius: 20px; transition: all 0.3s ease;
+        }
+        .back-link:hover { color: #00f0ff; border-color: #00f0ff; box-shadow: 0 0 20px rgba(0,240,255,0.2); }
         .hint { margin-top: 12px; font-size: 12px; color: rgba(0,240,255,0.25); letter-spacing: 0.5px; }
         @media (max-width: 700px) {
             .container { padding: 16px; border-radius: 14px; }
@@ -119,14 +132,16 @@
     <div class="container">
         <h1>🎯 FPS 打靶训练</h1>
         <div class="mode-selector">
-            <button class="mode-btn active" data-time="30">30秒</button>
-            <button class="mode-btn" data-time="60">60秒</button>
+            <button class="mode-btn active-time" data-mode="30">30秒</button>
+            <button class="mode-btn" data-mode="60">60秒</button>
+            <button class="mode-btn" data-mode="extreme">🚀 极限模式</button>
         </div>
         <div class="game-info">
             <div class="info-item"><span class="label">⏱ 剩余</span><span class="value" id="timeDisplay">30</span></div>
-            <div class="info-item"><span class="label">🎯 得分</span><span class="value" id="scoreDisplay">0</span></div>
-            <div class="info-item"><span class="label">📊 命中率</span><span class="value" id="hitRateDisplay">-</span></div>
-            <div class="info-item"><span class="label">⚡ 平均反应</span><span class="value" id="avgReactionDisplay">-</span></div>
+            <div class="info-item" id="infoScore"><span class="label">🎯 得分</span><span class="value" id="scoreDisplay">0</span></div>
+            <div class="info-item" id="infoHitRate"><span class="label">📊 命中率</span><span class="value" id="hitRateDisplay">-</span></div>
+            <div class="info-item" id="infoAvgReaction"><span class="label">⚡ 平均反应</span><span class="value" id="avgReactionDisplay">-</span></div>
+            <div class="info-item" id="infoWave"><span class="label">🌊 波次</span><span class="value" id="waveDisplay">0</span></div>
             <div class="info-item"><span class="label">🏆 最佳</span><span class="value" id="bestDisplay">-</span></div>
         </div>
         <div class="canvas-wrapper">
@@ -141,18 +156,22 @@
             </div>
         </div>
         <p class="hint">点击靶心射击 · 十字准星瞄准 · 混合移动靶与静态靶</p>
+        <a href="../index.html" class="back-link">← 返回主页</a>
     </div>
     <script>
 /**
  * FPS 打靶训练 - 完整 JavaScript 逻辑
  * 渲染方式：Canvas 2D
- * 特点：混合静态/移动靶、反应时间统计、LocalStorage 最佳成绩
+ * 特点：30/60秒限时模式 + 极限模式（多靶、强化靶、无统计纯娱乐）
  */
 const canvas=document.getElementById('gameCanvas'),ctx=canvas.getContext('2d');
 const overlay=document.getElementById('overlay'),overlayContent=document.getElementById('overlayContent');
 const btnStart=document.getElementById('btnStart'),timeDisplay=document.getElementById('timeDisplay');
 const scoreDisplay=document.getElementById('scoreDisplay'),hitRateDisplay=document.getElementById('hitRateDisplay');
 const avgReactionDisplay=document.getElementById('avgReactionDisplay'),bestDisplay=document.getElementById('bestDisplay');
+const waveDisplay=document.getElementById('waveDisplay');
+const infoScore=document.getElementById('infoScore'),infoHitRate=document.getElementById('infoHitRate');
+const infoAvgReaction=document.getElementById('infoAvgReaction'),infoWave=document.getElementById('infoWave');
 const modeBtns=document.querySelectorAll('.mode-btn');
 let audioCtx=null;
 function initAudio(){if(!audioCtx)audioCtx=new(window.AudioContext||window.webkitAudioContext)();}
@@ -160,34 +179,37 @@ function playHitSound(){try{initAudio();const o=audioCtx.createOscillator(),g=au
 function playMissSound(){try{initAudio();const o=audioCtx.createOscillator(),g=audioCtx.createGain();o.connect(g);g.connect(audioCtx.destination);o.type='sine';o.frequency.setValueAtTime(220,audioCtx.currentTime);o.frequency.exponentialRampToValueAtTime(110,audioCtx.currentTime+0.1);g.gain.setValueAtTime(0.15,audioCtx.currentTime);g.gain.exponentialRampToValueAtTime(0.001,audioCtx.currentTime+0.12);o.start(audioCtx.currentTime);o.stop(audioCtx.currentTime+0.12);}catch(e){}}
 function playCountdownBeep(){try{initAudio();const o=audioCtx.createOscillator(),g=audioCtx.createGain();o.connect(g);g.connect(audioCtx.destination);o.type='square';o.frequency.setValueAtTime(600,audioCtx.currentTime);g.gain.setValueAtTime(0.1,audioCtx.currentTime);g.gain.exponentialRampToValueAtTime(0.001,audioCtx.currentTime+0.1);o.start(audioCtx.currentTime);o.stop(audioCtx.currentTime+0.1);}catch(e){}}
 function playStartBeep(){try{initAudio();const o=audioCtx.createOscillator(),g=audioCtx.createGain();o.connect(g);g.connect(audioCtx.destination);o.type='sine';o.frequency.setValueAtTime(660,audioCtx.currentTime);o.frequency.exponentialRampToValueAtTime(880,audioCtx.currentTime+0.15);g.gain.setValueAtTime(0.2,audioCtx.currentTime);g.gain.exponentialRampToValueAtTime(0.001,audioCtx.currentTime+0.2);o.start(audioCtx.currentTime);o.stop(audioCtx.currentTime+0.2);}catch(e){}}
-const R=25,M=35,SL=1500,ML=2000,SP=1.2,MR=0.3,SD=300;
-let gs='idle',st=30,tl=30,sc=0,hi=0,tm=0,ec=0,rt=[],bs=0,ba=0;
-let tg={x:0,y:0,type:'static',active:false,st:0,vx:0,vy:0,lt:SL,al:0,fi:false,ha:false,hs:0};
-let lt=0,af=null,gst=0,ct=null,stm=null,mx=-100,my=-100,mc=false,he=[];
+const R=25,M=35,SL=1500,ML=2000,SP=1.2,MR=0.3,SD=300,ESP=2.0,ECK=0.25,EWMIN=2,EWMAX=4;
+let gs='idle',st=30,tl=30,sc=0,hi=0,tm=0,ec=0,rt=[],bs=0,ba=0,isEx=false,wc=0;
+let tgs=[],lt=0,af=null,gst=0,ct=null,stm=null,sp=false,mx=-100,my=-100,mc=false,he=[];
+let playTime=0,extremeHits=0,extremeTotal=0,extremeEnhanced=0;
 function loadBest(){try{const s=localStorage.getItem('aimTrainer_bestScore'),a=localStorage.getItem('aimTrainer_bestAvgReaction');if(s!==null)bs=parseInt(s,10)||0;if(a!==null)ba=parseInt(a,10)||0;}catch(e){}updateBestDisplay();}
 function saveBest(){try{localStorage.setItem('aimTrainer_bestScore',bs);localStorage.setItem('aimTrainer_bestAvgReaction',ba);}catch(e){}}
 function updateBestDisplay(){if(bs>0){bestDisplay.textContent=bs+'分';bestDisplay.className='value highlight';}else{bestDisplay.textContent='无';bestDisplay.className='value';}}
-function spawnTarget(){const m=M;const im=Math.random()<MR;tg.x=m+Math.random()*(canvas.width-m*2);tg.y=m+Math.random()*(canvas.height-m*2);tg.type=im?'moving':'static';tg.active=true;tg.st=performance.now();tg.lt=im?ML:SL;tg.al=0;tg.fi=true;tg.ha=false;if(im){const a=Math.random()*Math.PI*2;tg.vx=Math.cos(a)*SP;tg.vy=Math.sin(a)*SP;}else{tg.vx=0;tg.vy=0;}}
-function updateTarget(now){if(!tg.active)return;if(tg.fi){tg.al=Math.min(1,tg.al+0.05);if(tg.al>=1)tg.fi=false;}if(tg.type==='moving'&&tg.active&&!tg.ha){tg.x+=tg.vx;tg.y+=tg.vy;const m=M;if(tg.x<m){tg.x=m;tg.vx=Math.abs(tg.vx);}if(tg.x>canvas.width-m){tg.x=canvas.width-m;tg.vx=-Math.abs(tg.vx);}if(tg.y<m){tg.y=m;tg.vy=Math.abs(tg.vy);}if(tg.y>canvas.height-m){tg.y=canvas.height-m;tg.vy=-Math.abs(tg.vy);}}const el=now-tg.st;if(el>=tg.lt&&tg.active&&!tg.ha){tg.active=false;tm++;playMissSound();updateInfoBar();scheduleNextSpawn();}}
-function scheduleNextSpawn(){if(stm)clearTimeout(stm);if(gs!=='playing')return;stm=setTimeout(()=>{if(gs==='playing')spawnTarget();},SD);}
-function handleCanvasClick(e){if(gs!=='playing')return;const rect=canvas.getBoundingClientRect();const sx=canvas.width/rect.width,sy=canvas.height/rect.height;const cx=(e.clientX-rect.left)*sx,cy=(e.clientY-rect.top)*sy;if(tg.active&&!tg.ha){const dx=cx-tg.x,dy=cy-tg.y;if(Math.sqrt(dx*dx+dy*dy)<=R){const now=performance.now();rt.push(now-tg.st);hi++;sc++;tg.ha=true;tg.hs=now;he.push({x:tg.x,y:tg.y,startTime:now,duration:400,type:'hit'});playHitSound();updateInfoBar();setTimeout(()=>{if(gs==='playing'){tg.active=false;scheduleNextSpawn();}},150);return;}}ec++;he.push({x:cx,y:cy,startTime:performance.now(),duration:300,type:'miss'});playMissSound();updateInfoBar();}
-function updateInfoBar(){scoreDisplay.textContent=sc;const dt=Math.ceil(tl);timeDisplay.textContent=dt;timeDisplay.className='value'+(dt<=5?' time-warn':'');const total=hi+tm;hitRateDisplay.textContent=total>0?Math.round(hi/total*100)+'%':'-';avgReactionDisplay.textContent=rt.length>0?Math.round(rt.reduce((a,b)=>a+b,0)/rt.length)+'ms':'-';}
+function createTarget(){const m=M,im=Math.random()<MR,en=isEx&&Math.random()<ECK;const spd=isEx?ESP:SP;const lt2=im?ML:SL;const t={x:m+Math.random()*(canvas.width-m*2),y:m+Math.random()*(canvas.height-m*2),type:im?'moving':'static',active:true,st:performance.now(),lt:lt2,al:0,fi:true,ha:false,hs:0,enhanced:en,hitCount:0};if(im){const a=Math.random()*Math.PI*2;t.vx=Math.cos(a)*spd;t.vy=Math.sin(a)*spd;}else{t.vx=0;t.vy=0;}return t;}
+function spawnTargets(){if(isEx){const n=EWMIN+Math.floor(Math.random()*(EWMAX-EWMIN+1));tgs=[];for(let i=0;i<n;i++)tgs.push(createTarget());wc++;updateInfoBar();}else{tgs=[createTarget()];}}
+function updateTargets(now){for(let i=tgs.length-1;i>=0;i--){const t=tgs[i];if(!t.active){tgs.splice(i,1);continue;}if(t.fi){t.al=Math.min(1,t.al+0.05);if(t.al>=1)t.fi=false;}if(t.type==='moving'&&t.active&&!t.ha){t.x+=t.vx;t.y+=t.vy;const m=M;if(t.x<m){t.x=m;t.vx=Math.abs(t.vx);}if(t.x>canvas.width-m){t.x=canvas.width-m;t.vx=-Math.abs(t.vx);}if(t.y<m){t.y=m;t.vy=Math.abs(t.vy);}if(t.y>canvas.height-m){t.y=canvas.height-m;t.vy=-Math.abs(t.vy);}}const el=now-t.st;if(!isEx&&el>=t.lt&&t.active&&!t.ha){t.active=false;tm++;playMissSound();updateInfoBar();}}if(tgs.length===0&&gs==='playing'&&!sp){sp=true;if(isEx){stm=setTimeout(()=>{sp=false;if(gs==='playing')spawnTargets();},300);}else{sp=false;scheduleNextSpawn();}}}
+function scheduleNextSpawn(){if(stm)clearTimeout(stm);if(gs!=='playing')return;stm=setTimeout(()=>{if(gs==='playing')spawnTargets();},SD);}
+function handleCanvasClick(e){if(gs!=='playing')return;const rect=canvas.getBoundingClientRect();const sx=canvas.width/rect.width,sy=canvas.height/rect.height;const cx=(e.clientX-rect.left)*sx,cy=(e.clientY-rect.top)*sy;let hitAny=false;for(let i=tgs.length-1;i>=0;i--){const t=tgs[i];if(!t.active||t.ha)continue;const dx=cx-t.x,dy=cy-t.y;if(Math.sqrt(dx*dx+dy*dy)<=R){const now=performance.now();if(t.enhanced&&t.hitCount<1){t.hitCount++;he.push({x:t.x,y:t.y,startTime:now,duration:200,type:'hit'});playHitSound();if(!isEx)rt.push(now-t.st);updateInfoBar();hitAny=true;break;}t.ha=true;t.hs=now;he.push({x:t.x,y:t.y,startTime:now,duration:400,type:'hit'});playHitSound();if(!isEx){rt.push(now-t.st);hi++;sc++;}else{extremeHits++;}updateInfoBar();setTimeout(()=>{t.active=false;},150);hitAny=true;break;}}if(!hitAny){ec++;he.push({x:cx,y:cy,startTime:performance.now(),duration:300,type:'miss'});playMissSound();updateInfoBar();}}
+function updateInfoBar(){const dt=Math.ceil(tl);timeDisplay.textContent=dt;timeDisplay.className='value'+(dt<=5?' time-warn':'');if(isEx){waveDisplay.textContent=wc;scoreDisplay.textContent='-';hitRateDisplay.textContent='-';avgReactionDisplay.textContent='-';}else{scoreDisplay.textContent=sc;const total=hi+tm;hitRateDisplay.textContent=total>0?Math.round(hi/total*100)+'%':'-';avgReactionDisplay.textContent=rt.length>0?Math.round(rt.reduce((a,b)=>a+b,0)/rt.length*10)/10+'ms':'-';}}
 function drawBackground(){const g=ctx.createRadialGradient(canvas.width/2,canvas.height/2,0,canvas.width/2,canvas.height/2,canvas.width*0.6);g.addColorStop(0,'#1a0a2e');g.addColorStop(1,'#080812');ctx.fillStyle=g;ctx.fillRect(0,0,canvas.width,canvas.height);ctx.strokeStyle='rgba(0,240,255,0.03)';ctx.lineWidth=0.5;for(let x=0;x<=canvas.width;x+=40){ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,canvas.height);ctx.stroke();}for(let y=0;y<=canvas.height;y+=40){ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(canvas.width,y);ctx.stroke();}ctx.strokeStyle='rgba(255,45,149,0.06)';ctx.lineWidth=1;ctx.setLineDash([6,8]);ctx.beginPath();ctx.moveTo(canvas.width/2,0);ctx.lineTo(canvas.width/2,canvas.height);ctx.stroke();ctx.beginPath();ctx.moveTo(0,canvas.height/2);ctx.lineTo(canvas.width,canvas.height/2);ctx.stroke();ctx.setLineDash([]);}
-function drawTarget(){if(!tg.active&&!tg.ha)return;const{x,y}=tg;const now=performance.now();const al=tg.ha?Math.max(0,1-(now-tg.hs)/300):tg.al;const im=tg.type==='moving';const ih=tg.ha;const gg=ctx.createRadialGradient(x,y,R*0.5,x,y,R*1.5);const gc=im?'rgba(0,240,255,':'rgba(255,45,149,';gg.addColorStop(0,gc+(0.15*al)+')');gg.addColorStop(1,gc+'0)');ctx.fillStyle=gg;ctx.beginPath();ctx.arc(x,y,R*1.5,0,Math.PI*2);ctx.fill();ctx.beginPath();ctx.arc(x,y,R,0,Math.PI*2);ctx.fillStyle=im?'rgba(0,240,255,'+(0.25*al)+')':'rgba(255,45,149,'+(0.25*al)+')';ctx.fill();ctx.strokeStyle=im?'rgba(0,240,255,'+(0.5*al)+')':'rgba(255,45,149,'+(0.5*al)+')';ctx.lineWidth=1.5;ctx.stroke();ctx.beginPath();ctx.arc(x,y,18,0,Math.PI*2);ctx.fillStyle='rgba(255,255,255,'+(0.5*al)+')';ctx.fill();ctx.strokeStyle='rgba(255,255,255,'+(0.3*al)+')';ctx.lineWidth=1;ctx.stroke();ctx.beginPath();ctx.arc(x,y,11,0,Math.PI*2);ctx.fillStyle=im?'rgba(0,240,255,'+(0.9*al)+')':'rgba(255,45,149,'+(0.9*al)+')';ctx.fill();ctx.strokeStyle=im?'rgba(0,240,255,'+(0.6*al)+')':'rgba(255,45,149,'+(0.6*al)+')';ctx.lineWidth=1;ctx.stroke();ctx.beginPath();ctx.arc(x,y,4,0,Math.PI*2);ctx.fillStyle='rgba(255,255,255,'+(0.95*al)+')';ctx.fill();if(im&&!ih&&tg.active){const a=Math.atan2(tg.vy,tg.vx);const d=R+12;ctx.save();ctx.translate(x+Math.cos(a)*d,y+Math.sin(a)*d);ctx.rotate(a);ctx.fillStyle='rgba(0,240,255,'+(0.6*al)+')';ctx.beginPath();ctx.moveTo(6,0);ctx.lineTo(-3,-4);ctx.lineTo(-3,4);ctx.closePath();ctx.fill();ctx.restore();}if(ih){const p=(now-tg.hs)/300;const rr=R+p*60,aa=Math.max(0,1-p);ctx.beginPath();ctx.arc(x,y,rr,0,Math.PI*2);ctx.strokeStyle='rgba(0,240,255,'+(aa*0.8)+')';ctx.lineWidth=2.5;ctx.stroke();}}
+function drawTargets(){for(const t of tgs){if(!t.active&&!t.ha)continue;const{x,y}=t;const now=performance.now();const al=t.ha?Math.max(0,1-(now-t.hs)/300):t.al;const im=t.type==='moving';const ih=t.ha;const gg=ctx.createRadialGradient(x,y,R*0.5,x,y,R*1.5);const gc=im?'rgba(0,240,255,':'rgba(255,45,149,';gg.addColorStop(0,gc+(0.15*al)+')');gg.addColorStop(1,gc+'0)');ctx.fillStyle=gg;ctx.beginPath();ctx.arc(x,y,R*1.5,0,Math.PI*2);ctx.fill();ctx.beginPath();ctx.arc(x,y,R,0,Math.PI*2);ctx.fillStyle=im?'rgba(0,240,255,'+(0.25*al)+')':'rgba(255,45,149,'+(0.25*al)+')';ctx.fill();ctx.strokeStyle=im?'rgba(0,240,255,'+(0.5*al)+')':'rgba(255,45,149,'+(0.5*al)+')';ctx.lineWidth=1.5;ctx.stroke();ctx.beginPath();ctx.arc(x,y,18,0,Math.PI*2);ctx.fillStyle='rgba(255,255,255,'+(0.5*al)+')';ctx.fill();ctx.strokeStyle='rgba(255,255,255,'+(0.3*al)+')';ctx.lineWidth=1;ctx.stroke();ctx.beginPath();ctx.arc(x,y,11,0,Math.PI*2);ctx.fillStyle=im?'rgba(0,240,255,'+(0.9*al)+')':'rgba(255,45,149,'+(0.9*al)+')';ctx.fill();ctx.strokeStyle=im?'rgba(0,240,255,'+(0.6*al)+')':'rgba(255,45,149,'+(0.6*al)+')';ctx.lineWidth=1;ctx.stroke();ctx.beginPath();ctx.arc(x,y,4,0,Math.PI*2);ctx.fillStyle='rgba(255,255,255,'+(0.95*al)+')';ctx.fill();if(im&&!ih&&t.active){const a=Math.atan2(t.vy,t.vx);const d=R+12;ctx.save();ctx.translate(x+Math.cos(a)*d,y+Math.sin(a)*d);ctx.rotate(a);ctx.fillStyle='rgba(0,240,255,'+(0.6*al)+')';ctx.beginPath();ctx.moveTo(6,0);ctx.lineTo(-3,-4);ctx.lineTo(-3,4);ctx.closePath();ctx.fill();ctx.restore();}
+if(t.enhanced&&!ih&&t.active){ctx.beginPath();ctx.arc(x,y,R+4,0,Math.PI*2);ctx.strokeStyle='rgba(0,255,135,'+(0.8*al)+')';ctx.lineWidth=2.5;ctx.setLineDash([]);ctx.stroke();if(t.hitCount>=1){ctx.beginPath();ctx.arc(x,y,R+8,0,Math.PI*2);ctx.strokeStyle='rgba(255,215,0,'+(0.5*al)+')';ctx.lineWidth=1.5;ctx.setLineDash([4,4]);ctx.stroke();ctx.setLineDash([]);}}
+if(ih){const p=(now-t.hs)/300;const rr=R+p*60,aa=Math.max(0,1-p);ctx.beginPath();ctx.arc(x,y,rr,0,Math.PI*2);ctx.strokeStyle='rgba(0,240,255,'+(aa*0.8)+')';ctx.lineWidth=2.5;ctx.stroke();}}}
 function drawHitEffects(){const now=performance.now();he=he.filter(e=>now-e.startTime<e.duration);for(const e of he){const p=(now-e.startTime)/e.duration,a=Math.max(0,1-p);if(e.type==='hit'){const r=10+p*50;ctx.beginPath();ctx.arc(e.x,e.y,r,0,Math.PI*2);ctx.strokeStyle='rgba(255,45,149,'+(a*0.6)+')';ctx.lineWidth=2;ctx.stroke();for(let i=0;i<6;i++){const angle=(i/6)*Math.PI*2+p*2,d=p*35;ctx.beginPath();ctx.arc(e.x+Math.cos(angle)*d,e.y+Math.sin(angle)*d,2,0,Math.PI*2);ctx.fillStyle='rgba(255,45,149,'+(a*0.8)+')';ctx.fill();}}else{const s=6+p*8;ctx.strokeStyle='rgba(0,240,255,'+(a*0.2)+')';ctx.lineWidth=1.5;ctx.beginPath();ctx.moveTo(e.x-s,e.y-s);ctx.lineTo(e.x+s,e.y+s);ctx.stroke();ctx.beginPath();ctx.moveTo(e.x+s,e.y-s);ctx.lineTo(e.x-s,e.y+s);ctx.stroke();}}}
 function drawCrosshair(){if(!mc&&gs!=='playing')return;ctx.save();ctx.strokeStyle='rgba(255,255,255,0.85)';ctx.lineWidth=1.5;ctx.shadowColor='rgba(0,240,255,0.5)';ctx.shadowBlur=6;const g=5,l=14;ctx.beginPath();ctx.moveTo(mx,my-g);ctx.lineTo(mx,my-g-l);ctx.stroke();ctx.beginPath();ctx.moveTo(mx,my+g);ctx.lineTo(mx,my+g+l);ctx.stroke();ctx.beginPath();ctx.moveTo(mx-g,my);ctx.lineTo(mx-g-l,my);ctx.stroke();ctx.beginPath();ctx.moveTo(mx+g,my);ctx.lineTo(mx+g+l,my);ctx.stroke();ctx.shadowBlur=0;ctx.beginPath();ctx.arc(mx,my,1.5,0,Math.PI*2);ctx.fillStyle='rgba(255,255,255,0.85)';ctx.fill();ctx.restore();}
-function render(){ctx.clearRect(0,0,canvas.width,canvas.height);drawBackground();drawHitEffects();drawTarget();if(mc||gs==='playing')drawCrosshair();}
-function gameLoop(){if(gs==='ended'){render();return;}const now=performance.now();if(gs==='playing'){const el=(now-gst)/1000;tl=Math.max(0,st-el);updateInfoBar();if(tl<=0){endGame();return;}updateTarget(now);}render();af=requestAnimationFrame(gameLoop);}
-function startCountdown(){gs='countdown';sc=0;hi=0;tm=0;ec=0;rt=[];he=[];tg.active=false;if(stm)clearTimeout(stm);tl=st;updateInfoBar();let count=3;overlay.classList.remove('hidden');overlayContent.innerHTML='';function showCount(n){overlayContent.innerHTML='<div class="countdown-num">'+(n>0?n:'GO!')+'</div><div class="countdown-label">'+(n>0?'做好准备...':'')+'</div>';if(n>0)playCountdownBeep();else playStartBeep();}showCount(3);ct=setInterval(()=>{count--;if(count>0)showCount(count);else if(count===0)showCount(0);else{clearInterval(ct);ct=null;overlay.classList.add('hidden');gs='playing';gst=performance.now();tg.active=false;scheduleNextSpawn();af=requestAnimationFrame(gameLoop);}},800);}
-function endGame(){gs='ended';if(af){cancelAnimationFrame(af);af=null;}if(stm){clearTimeout(stm);stm=null;}tg.active=false;const total=hi+tm;const hr=total>0?Math.round(hi/total*100):0;const ar=rt.length>0?Math.round(rt.reduce((a,b)=>a+b,0)/rt.length*10)/10:0;const fr=rt.length>0?Math.min(...rt):0;const frD=fr>0?Math.round(fr*10)/10:0;let nb=false;if(sc>bs){bs=sc;nb=true;}if(ar>0&&(ba===0||ar<ba)){ba=ar;nb=true;}if(nb){saveBest();updateBestDisplay();}render();const bt=bs>0?bs+' 分':'无';const ba2=ba>0?ba+'ms':'无';overlayContent.innerHTML='<h2 style="font-size:24px;margin-bottom:4px;">🎯 训练结束!</h2><p style="font-size:13px;color:rgba(255,255,255,0.5);margin-bottom:12px;">'+st+'秒模式 · '+(hi+tm)+' 个靶子</p><div class="result-grid"><div class="result-item"><div class="result-label">🎯 得分</div><div class="result-value gold">'+sc+'</div></div><div class="result-item"><div class="result-label">✅ 命中</div><div class="result-value green">'+hi+'</div></div><div class="result-item"><div class="result-label">⏰ 漏靶</div><div class="result-value red">'+tm+'</div></div><div class="result-item"><div class="result-label">🔫 空枪</div><div class="result-value blue">'+ec+'</div></div><div class="result-item"><div class="result-label">📊 命中率</div><div class="result-value green">'+hr+'%</div></div><div class="result-item"><div class="result-label">⚡ 平均反应</div><div class="result-value orange">'+(ar>0?ar+'ms':'-')+'</div></div><div class="result-item"><div class="result-label">🚀 最快反应</div><div class="result-value purple">'+(fr>0?frD+'ms':'-')+'</div></div><div class="result-item"><div class="result-label">🏆 最佳得分</div><div class="result-value gold">'+bt+'</div></div></div><div class="result-best"><span class="best-label">🏆 最佳平均反应时间</span><span class="best-value">'+ba2+'</span></div><button class="btn-primary" id="btnRestart">再来一次</button>';overlay.classList.remove('hidden');const btnR=document.getElementById('btnRestart');if(btnR)btnR.addEventListener('click',()=>startCountdown());}
+function render(){ctx.clearRect(0,0,canvas.width,canvas.height);drawBackground();drawHitEffects();drawTargets();if(mc||gs==='playing')drawCrosshair();}
+function gameLoop(){if(gs==='ended'){render();return;}const now=performance.now();if(gs==='playing'){const el=(now-gst)/1000;tl=Math.max(0,st-el);updateInfoBar();if(tl<=0){endGame();return;}updateTargets(now);}render();af=requestAnimationFrame(gameLoop);}
+function startCountdown(){gs='countdown';sc=0;hi=0;tm=0;ec=0;rt=[];he=[];tgs=[];wc=0;extremeHits=0;extremeTotal=0;if(stm)clearTimeout(stm);tl=isEx?60:st;updateInfoBar();let count=3;overlay.classList.remove('hidden');overlayContent.innerHTML='';function showCount(n){overlayContent.innerHTML='<div class="countdown-num">'+(n>0?n:'GO!')+'</div><div class="countdown-label">'+(n>0?'做好准备...':'')+'</div>';if(n>0)playCountdownBeep();else playStartBeep();}showCount(3);ct=setInterval(()=>{count--;if(count>0)showCount(count);else if(count===0)showCount(0);else{clearInterval(ct);ct=null;overlay.classList.add('hidden');gs='playing';gst=performance.now();spawnTargets();af=requestAnimationFrame(gameLoop);}},800);}
+function endGame(){gs='ended';if(af){cancelAnimationFrame(af);af=null;}if(stm){clearTimeout(stm);stm=null;}for(const t of tgs)t.active=false;render();if(isEx){overlayContent.innerHTML='<h2 style="font-size:24px;margin-bottom:4px;">🚀 极限训练结束!</h2><p style="font-size:13px;color:rgba(255,255,255,0.5);margin-bottom:12px;">纯粹娱乐练习模式</p><div class="result-grid"><div class="result-item"><div class="result-label">🌊 波次</div><div class="result-value gold">'+wc+'</div></div><div class="result-item"><div class="result-label">🎯 命中</div><div class="result-value green">'+extremeHits+'</div></div><div class="result-item"><div class="result-label">⏱ 训练时长</div><div class="result-value blue">'+st+'秒</div></div><div class="result-item"><div class="result-label">🏆 最佳得分</div><div class="result-value gold">'+(bs>0?bs+'分':'无')+'</div></div></div><button class="btn-primary btn-extreme" id="btnRestart">再来一局</button>';}else{const total=hi+tm;const hr=total>0?Math.round(hi/total*100):0;const ar=rt.length>0?Math.round(rt.reduce((a,b)=>a+b,0)/rt.length*10)/10:0;const fr=rt.length>0?Math.min(...rt):0;const frD=fr>0?Math.round(fr*10)/10:0;let nb=false;if(sc>bs){bs=sc;nb=true;}if(ar>0&&(ba===0||ar<ba)){ba=ar;nb=true;}if(nb){saveBest();updateBestDisplay();}const bt=bs>0?bs+'分':'无';const ba2=ba>0?ba+'ms':'无';overlayContent.innerHTML='<h2 style="font-size:24px;margin-bottom:4px;">🎯 训练结束!</h2><p style="font-size:13px;color:rgba(255,255,255,0.5);margin-bottom:12px;">'+st+'秒模式 · '+(hi+tm)+' 个靶子</p><div class="result-grid"><div class="result-item"><div class="result-label">🎯 得分</div><div class="result-value gold">'+sc+'</div></div><div class="result-item"><div class="result-label">✅ 命中</div><div class="result-value green">'+hi+'</div></div><div class="result-item"><div class="result-label">⏰ 漏靶</div><div class="result-value red">'+tm+'</div></div><div class="result-item"><div class="result-label">🔫 空枪</div><div class="result-value blue">'+ec+'</div></div><div class="result-item"><div class="result-label">📊 命中率</div><div class="result-value green">'+hr+'%</div></div><div class="result-item"><div class="result-label">⚡ 平均反应</div><div class="result-value orange">'+(ar>0?ar+'ms':'-')+'</div></div><div class="result-item"><div class="result-label">🚀 最快反应</div><div class="result-value purple">'+(fr>0?frD+'ms':'-')+'</div></div><div class="result-item"><div class="result-label">🏆 最佳得分</div><div class="result-value gold">'+bt+'</div></div></div><div class="result-best"><span class="best-label">🏆 最佳平均反应时间</span><span class="best-value">'+ba2+'</span></div><button class="btn-primary" id="btnRestart">再来一次</button>';}overlay.classList.remove('hidden');const btnR=document.getElementById('btnRestart');if(btnR)btnR.addEventListener('click',()=>startCountdown());}
 canvas.addEventListener('click',handleCanvasClick);
 canvas.addEventListener('mousemove',(e)=>{const rect=canvas.getBoundingClientRect();mx=(e.clientX-rect.left)*(canvas.width/rect.width);my=(e.clientY-rect.top)*(canvas.height/rect.height);mc=true;});
 canvas.addEventListener('mouseenter',()=>{mc=true;});
 canvas.addEventListener('mouseleave',()=>{mc=false;});
 canvas.addEventListener('touchstart',(e)=>{e.preventDefault();if(gs!=='playing')return;const t=e.touches[0],rect=canvas.getBoundingClientRect();mx=(t.clientX-rect.left)*(canvas.width/rect.width);my=(t.clientY-rect.top)*(canvas.height/rect.height);mc=true;const ce=new MouseEvent('click',{clientX:t.clientX,clientY:t.clientY});canvas.dispatchEvent(ce);},{passive:false});
-modeBtns.forEach(btn=>{btn.addEventListener('click',()=>{if(gs==='playing'||gs==='countdown')return;modeBtns.forEach(b=>b.classList.remove('active'));btn.classList.add('active');st=parseInt(btn.dataset.time,10);tl=st;timeDisplay.textContent=st;timeDisplay.className='value';});});
+modeBtns.forEach(btn=>{btn.addEventListener('click',()=>{if(gs==='playing'||gs==='countdown')return;modeBtns.forEach(b=>b.classList.remove('active-time','active-extreme'));const mode=btn.dataset.mode;if(mode==='extreme'){isEx=true;st=60;btn.classList.add('active-extreme');infoScore.style.display='none';infoHitRate.style.display='none';infoAvgReaction.style.display='none';infoWave.style.display='';timeDisplay.textContent='60';}else{isEx=false;st=parseInt(mode,10);btn.classList.add('active-time');infoScore.style.display='';infoHitRate.style.display='';infoAvgReaction.style.display='';infoWave.style.display='none';timeDisplay.textContent=st;}tl=st;timeDisplay.className='value';});});
 btnStart.addEventListener('click',()=>{initAudio();startCountdown();});
-loadBest();tl=st;timeDisplay.textContent=st;scoreDisplay.textContent='0';hitRateDisplay.textContent='-';avgReactionDisplay.textContent='-';render();
+loadBest();tl=st;timeDisplay.textContent=st;scoreDisplay.textContent='0';hitRateDisplay.textContent='-';avgReactionDisplay.textContent='-';waveDisplay.textContent='0';infoWave.style.display='none';render();
     </script>
 </body>
 </html>
