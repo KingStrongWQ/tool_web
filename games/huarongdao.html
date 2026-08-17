@@ -1,0 +1,734 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>华容道 - 三国经典滑块</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+    font-family: 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', system-ui, sans-serif;
+    background: linear-gradient(150deg, #2d1b0e 0%, #3d2415 40%, #4a2c1a 100%);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    padding: 20px;
+    color: #e8d5c4;
+}
+.game-container {
+    background: linear-gradient(145deg, #5c3a1e, #7a4f2b);
+    padding: 28px 30px 24px;
+    border-radius: 20px;
+    box-shadow: 0 12px 48px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,215,140,0.15);
+    max-width: 520px;
+    width: 100%;
+    text-align: center;
+    border: 2px solid #a67c52;
+}
+h1 {
+    font-size: 28px;
+    font-weight: 700;
+    letter-spacing: 4px;
+    margin-bottom: 4px;
+    color: #f5d7a1;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.4);
+}
+.subtitle {
+    font-size: 13px;
+    color: #c4a882;
+    margin-bottom: 16px;
+    letter-spacing: 2px;
+}
+.game-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 14px;
+    padding: 8px 14px;
+    background: rgba(0,0,0,0.3);
+    border-radius: 10px;
+    border: 1px solid rgba(166,124,82,0.3);
+}
+.level-name {
+    font-size: 16px;
+    font-weight: 600;
+    color: #f5d7a1;
+}
+.step-counter {
+    font-size: 14px;
+    color: #c4a882;
+    font-variant-numeric: tabular-nums;
+}
+.step-counter span { color: #f5d7a1; font-weight: 700; }
+
+/* 棋盘 */
+.board-wrapper {
+    position: relative;
+    display: inline-block;
+}
+.board {
+    position: relative;
+    width: 320px;
+    height: 400px;
+    background: #3a2416;
+    border-radius: 8px;
+    border: 3px solid #8a6b45;
+    box-shadow: inset 0 0 20px rgba(0,0,0,0.5);
+    margin: 0 auto;
+    overflow: hidden;
+}
+/* 棋盘网格线 */
+.board-grid {
+    position: absolute;
+    top: 0; left: 0; width: 100%; height: 100%;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    grid-template-rows: repeat(5, 1fr);
+    pointer-events: none;
+    z-index: 1;
+}
+.board-grid .cell {
+    border: 1px solid rgba(139,107,69,0.25);
+    position: relative;
+}
+.board-grid .cell.exit {
+    border-bottom: 3px solid #f5d7a1;
+    box-shadow: inset 0 -8px 20px rgba(245,215,161,0.08);
+}
+.exit-marker {
+    text-align: center;
+    font-size: 12px;
+    color: #f5d7a1;
+    letter-spacing: 4px;
+    margin-top: 6px;
+    opacity: 0.7;
+}
+
+/* 棋子 */
+.piece {
+    position: absolute;
+    border-radius: 6px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    cursor: pointer;
+    z-index: 2;
+    user-select: none;
+    transition: left 0.15s ease, top 0.15s ease;
+    border: 2px solid rgba(0,0,0,0.25);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.2);
+    text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+}
+.piece:hover {
+    z-index: 3;
+}
+.piece.selected {
+    border-color: #fff;
+    box-shadow: 0 0 0 3px #f5d7a1, 0 0 20px rgba(245,215,161,0.4), 0 2px 8px rgba(0,0,0,0.3);
+    z-index: 4;
+}
+.piece .piece-name {
+    font-size: 14px;
+    line-height: 1.2;
+}
+.piece .piece-emoji {
+    font-size: 18px;
+    line-height: 1.2;
+}
+/* 棋子大小 */
+.piece-size-1x1 { width: 78px; height: 78px; }
+.piece-size-2x1 { width: 158px; height: 78px; }
+.piece-size-1x2 { width: 78px; height: 158px; }
+.piece-size-2x2 { width: 158px; height: 158px; }
+
+/* 棋子颜色 */
+.piece-caocao {
+    background: linear-gradient(135deg, #d4a017, #b8860b);
+    border-color: #8b6914;
+}
+.piece-guanyu {
+    background: linear-gradient(135deg, #22c55e, #16a34a);
+    border-color: #15803d;
+}
+.piece-zhangfei {
+    background: linear-gradient(135deg, #8b5cf6, #7c3aed);
+    border-color: #6d28d9;
+}
+.piece-zhaoyun {
+    background: linear-gradient(135deg, #3b82f6, #2563eb);
+    border-color: #1d4ed8;
+}
+.piece-machao {
+    background: linear-gradient(135deg, #06b6d4, #0891b2);
+    border-color: #0e7490;
+}
+.piece-huangzhong {
+    background: linear-gradient(135deg, #f97316, #ea580c);
+    border-color: #c2410c;
+}
+.piece-bing {
+    background: linear-gradient(135deg, #78716c, #57534e);
+    border-color: #44403c;
+}
+
+/* 方向控制 */
+.controls {
+    margin-top: 14px;
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+}
+.controls .dir-pad {
+    display: grid;
+    grid-template-columns: 50px 50px 50px;
+    grid-template-rows: 50px 50px;
+    gap: 4px;
+}
+.dir-btn {
+    width: 50px;
+    height: 50px;
+    border: 1px solid rgba(166,124,82,0.4);
+    border-radius: 10px;
+    background: linear-gradient(145deg, rgba(92,58,30,0.8), rgba(60,35,15,0.8));
+    color: #f5d7a1;
+    font-size: 22px;
+    cursor: pointer;
+    transition: all 0.1s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+}
+.dir-btn:hover { background: rgba(166,124,82,0.4); }
+.dir-btn:active { transform: scale(0.92); background: rgba(166,124,82,0.5); }
+.dir-btn:disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
+    transform: none;
+}
+.dir-up { grid-column: 2; grid-row: 1; }
+.dir-left { grid-column: 1; grid-row: 2; }
+.dir-down { grid-column: 2; grid-row: 2; }
+.dir-right { grid-column: 3; grid-row: 2; }
+
+/* 关卡控制 */
+.level-controls {
+    margin-top: 14px;
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+.level-btn {
+    padding: 8px 18px;
+    border: 1px solid rgba(166,124,82,0.4);
+    border-radius: 8px;
+    background: rgba(0,0,0,0.3);
+    color: #e8d5c4;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-family: inherit;
+    -webkit-tap-highlight-color: transparent;
+}
+.level-btn:hover {
+    background: rgba(166,124,82,0.3);
+    color: #f5d7a1;
+}
+.level-btn:active { transform: scale(0.96); }
+.level-btn.primary {
+    background: linear-gradient(135deg, #a67c52, #8a6b45);
+    color: #2d1b0e;
+    border-color: #c4a882;
+}
+.level-btn.primary:hover {
+    background: linear-gradient(135deg, #c4a882, #a67c52);
+}
+
+.help-text {
+    margin-top: 12px;
+    font-size: 12px;
+    color: #a67c52;
+    letter-spacing: 1px;
+}
+
+/* 胜利弹窗 */
+.modal-overlay {
+    display: none;
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0,0,0,0.7);
+    z-index: 100;
+    justify-content: center;
+    align-items: center;
+    backdrop-filter: blur(4px);
+}
+.modal-overlay.active {
+    display: flex;
+}
+.modal-box {
+    background: linear-gradient(145deg, #5c3a1e, #7a4f2b);
+    padding: 36px 40px 32px;
+    border-radius: 20px;
+    border: 2px solid #f5d7a1;
+    box-shadow: 0 16px 64px rgba(0,0,0,0.6), 0 0 40px rgba(245,215,161,0.1);
+    text-align: center;
+    max-width: 360px;
+    width: 90%;
+    animation: modalIn 0.3s ease;
+}
+@keyframes modalIn {
+    from { transform: scale(0.85); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
+}
+.modal-box h2 {
+    font-size: 28px;
+    color: #f5d7a1;
+    margin-bottom: 10px;
+}
+.modal-box p {
+    font-size: 15px;
+    color: #c4a882;
+    margin-bottom: 20px;
+    line-height: 1.6;
+}
+.modal-box p span { color: #f5d7a1; font-weight: 700; }
+.modal-box .modal-btns {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+/* 返回主页 */
+.back-link {
+    display: inline-block;
+    margin-top: 16px;
+    color: #a67c52;
+    text-decoration: none;
+    font-size: 14px;
+    transition: color 0.2s;
+}
+.back-link:hover { color: #f5d7a1; }
+
+/* 响应式 */
+@media (max-width: 420px) {
+    .game-container { padding: 18px 14px 16px; }
+    .board { width: 280px; height: 350px; }
+    .piece-size-1x1 { width: 68px; height: 68px; }
+    .piece-size-2x1 { width: 138px; height: 68px; }
+    .piece-size-1x2 { width: 68px; height: 138px; }
+    .piece-size-2x2 { width: 138px; height: 138px; }
+    .piece .piece-name { font-size: 12px; }
+    .piece .piece-emoji { font-size: 15px; }
+    .dir-btn { width: 44px; height: 44px; font-size: 18px; }
+    .controls .dir-pad { grid-template-columns: 44px 44px 44px; grid-template-rows: 44px 44px; }
+    h1 { font-size: 22px; }
+}
+</style>
+</head>
+<body>
+
+<div class="game-container">
+    <h1>🏯 华容道</h1>
+    <p class="subtitle">— 三国经典滑块 —</p>
+
+    <div class="game-info">
+        <span class="level-name" id="levelName">横刀立马</span>
+        <span class="step-counter">步数：<span id="stepCount">0</span></span>
+    </div>
+
+    <div class="board-wrapper">
+        <div class="board" id="board">
+            <div class="board-grid" id="boardGrid"></div>
+        </div>
+        <div class="exit-marker">▼ 出口 ▼</div>
+    </div>
+
+    <div class="controls">
+        <div class="dir-pad">
+            <button class="dir-btn dir-up" data-dir="up" id="btnUp">↑</button>
+            <button class="dir-btn dir-left" data-dir="left" id="btnLeft">←</button>
+            <button class="dir-btn dir-down" data-dir="down" id="btnDown">↓</button>
+            <button class="dir-btn dir-right" data-dir="right" id="btnRight">→</button>
+        </div>
+    </div>
+
+    <div class="level-controls">
+        <button class="level-btn" id="prevLevel">◀ 上一关</button>
+        <button class="level-btn primary" id="resetLevel">🔄 重置</button>
+        <button class="level-btn" id="nextLevel">下一关 ▶</button>
+    </div>
+
+    <p class="help-text">点击棋子选中，方向键 / 方向按钮移动</p>
+
+    <a href="../index.html" class="back-link">← 返回主页</a>
+</div>
+
+<div class="modal-overlay" id="winModal">
+    <div class="modal-box">
+        <h2>🎉 恭喜通关！</h2>
+        <p>你用了 <span id="winSteps">0</span> 步<br>解开了「<span id="winLevel">横刀立马</span>」</p>
+        <div class="modal-btns">
+            <button class="level-btn primary" id="nextFromWin">下一关 ▶</button>
+            <button class="level-btn" id="replayFromWin">🔄 再玩一次</button>
+        </div>
+    </div>
+</div>
+
+<script>
+// ============ 数据定义 ============
+const COLS = 4, ROWS = 5;
+
+const PIECE_TYPES = {
+    caocao:   { id: 'caocao',   name: '曹操', w: 2, h: 2, cls: 'piece-caocao',   emoji: '👑' },
+    guanyu:   { id: 'guanyu',   name: '关羽', w: 2, h: 1, cls: 'piece-guanyu',   emoji: '🗡' },
+    zhangfei: { id: 'zhangfei', name: '张飞', w: 1, h: 2, cls: 'piece-zhangfei', emoji: '⚔' },
+    zhaoyun:  { id: 'zhaoyun',  name: '赵云', w: 1, h: 2, cls: 'piece-zhaoyun',  emoji: '🐉' },
+    machao:   { id: 'machao',   name: '马超', w: 1, h: 2, cls: 'piece-machao',   emoji: '🐎' },
+    huangzhong: { id: 'huangzhong', name: '黄忠', w: 2, h: 1, cls: 'piece-huangzhong', emoji: '🏹' },
+    bing1: { id: 'bing1', name: '兵', w: 1, h: 1, cls: 'piece-bing', emoji: '⛑' },
+    bing2: { id: 'bing2', name: '兵', w: 1, h: 1, cls: 'piece-bing', emoji: '⛑' },
+    bing3: { id: 'bing3', name: '兵', w: 1, h: 1, cls: 'piece-bing', emoji: '⛑' },
+    bing4: { id: 'bing4', name: '兵', w: 1, h: 1, cls: 'piece-bing', emoji: '⛑' },
+};
+
+// 关卡：每个布局定义各棋子的 [row, col] 起始位置
+const LEVELS = [
+    {
+        name: '横刀立马',
+        desc: '经典布局，曹操被众将重重包围',
+        pieces: {
+            caocao: [0, 0],   guanyu: [0, 2],
+            bing1: [1, 2],    bing2: [1, 3],
+            zhangfei: [2, 0], machao: [2, 2],
+            zhaoyun: [2, 3],  bing3: [3, 1],
+            huangzhong: [4, 0], bing4: [4, 3],
+        }
+    },
+    {
+        name: '兵分三路',
+        desc: '三路兵马，层层围堵',
+        pieces: {
+            caocao: [0, 0],   guanyu: [0, 2],
+            bing1: [1, 3],
+            zhangfei: [2, 0], bing2: [2, 1],
+            machao: [2, 2],   zhaoyun: [2, 3],
+            huangzhong: [4, 0], bing3: [4, 2], bing4: [4, 3],
+        }
+    },
+    {
+        name: '将挡关',
+        desc: '五虎将齐聚，曹操插翅难逃',
+        pieces: {
+            caocao: [0, 0],   guanyu: [0, 2],
+            bing1: [1, 2],    bing2: [1, 3],
+            zhangfei: [2, 0], machao: [2, 1],
+            zhaoyun: [2, 3],  bing3: [3, 2],
+            huangzhong: [4, 1], bing4: [4, 0],
+        }
+    },
+    {
+        name: '水泄不通',
+        desc: '四面围堵，密不透风',
+        pieces: {
+            caocao: [0, 0],   guanyu: [0, 2],
+            bing1: [1, 2],    bing2: [1, 3],
+            zhangfei: [2, 0], bing3: [2, 1],
+            zhaoyun: [2, 3],  machao: [3, 2],
+            huangzhong: [4, 0], bing4: [4, 3],
+        }
+    },
+    {
+        name: '四面楚歌',
+        desc: '十面埋伏，最后的突围',
+        pieces: {
+            caocao: [0, 0],   guanyu: [0, 2],
+            zhangfei: [2, 0], machao: [2, 1],
+            bing1: [2, 2],    zhaoyun: [2, 3],
+            bing2: [3, 2],    bing3: [4, 0],
+            bing4: [4, 1],    huangzhong: [4, 2],
+        }
+    }
+];
+
+// ============ 游戏状态 ============
+let state = {
+    levelIdx: 0,
+    steps: 0,
+    selected: null,        // 选中的棋子 id
+    board: [],             // 二维数组 board[row][col] = pieceId | null
+    pieces: {},            // { id: { row, col, type } }
+    moveCount: 0,
+};
+
+// ============ DOM 引用 ============
+const $ = id => document.getElementById(id);
+const boardEl = $('board');
+const boardGrid = $('boardGrid');
+const levelNameEl = $('levelName');
+const stepCountEl = $('stepCount');
+const winModal = $('winModal');
+const winSteps = $('winSteps');
+const winLevel = $('winLevel');
+
+// ============ 棋盘初始化 ============
+function initBoard() {
+    // 清空网格
+    boardGrid.innerHTML = '';
+    for (let r = 0; r < ROWS; r++) {
+        for (let c = 0; c < COLS; c++) {
+            const cell = document.createElement('div');
+            cell.className = 'cell' + (r === ROWS - 1 && (c === 1 || c === 2) ? ' exit' : '');
+            boardGrid.appendChild(cell);
+        }
+    }
+}
+
+// ============ 关卡加载 ============
+function loadLevel(idx) {
+    const level = LEVELS[idx];
+    if (!level) return;
+
+    state.levelIdx = idx;
+    state.steps = 0;
+    state.selected = null;
+    state.moveCount = 0;
+
+    // 初始化棋盘
+    state.board = Array.from({ length: ROWS }, () => Array(COLS).fill(null));
+    state.pieces = {};
+
+    // 放置棋子
+    for (const [id, pos] of Object.entries(level.pieces)) {
+        const [row, col] = pos;
+        const type = PIECE_TYPES[id];
+        state.pieces[id] = { row, col, type };
+        for (let dr = 0; dr < type.h; dr++) {
+            for (let dc = 0; dc < type.w; dc++) {
+                state.board[row + dr][col + dc] = id;
+            }
+        }
+    }
+
+    levelNameEl.textContent = level.name + ' · ' + (idx + 1) + '/' + LEVELS.length;
+    stepCountEl.textContent = '0';
+
+    render();
+    updateUI();
+}
+
+// ============ 渲染 ============
+function render() {
+    // 清除旧棋子
+    boardEl.querySelectorAll('.piece').forEach(el => el.remove());
+
+    const cellW = (boardEl.offsetWidth || 320) / COLS;
+    const cellH = (boardEl.offsetHeight || 400) / ROWS;
+
+    for (const [id, piece] of Object.entries(state.pieces)) {
+        const type = piece.type;
+        const el = document.createElement('div');
+        el.className = `piece ${type.cls} piece-size-${type.w}x${type.h}`;
+        if (state.selected === id) el.classList.add('selected');
+        el.dataset.id = id;
+
+        el.style.left = (piece.col * cellW) + 'px';
+        el.style.top = (piece.row * cellH) + 'px';
+        // 大小微调：留1px间隙
+        el.style.width = (type.w * cellW - 2) + 'px';
+        el.style.height = (type.h * cellH - 2) + 'px';
+
+        el.innerHTML = `<span class="piece-emoji">${type.emoji}</span><span class="piece-name">${type.name}</span>`;
+
+        el.addEventListener('click', () => selectPiece(id));
+        boardEl.appendChild(el);
+    }
+}
+
+// ============ 选中逻辑 ============
+function selectPiece(id) {
+    if (state.selected === id) return;
+    state.selected = id;
+    // 更新选中高亮
+    boardEl.querySelectorAll('.piece').forEach(el => {
+        el.classList.toggle('selected', el.dataset.id === id);
+    });
+}
+
+// ============ 移动检测 ============
+function canMove(pieceId, dr, dc) {
+    const piece = state.pieces[pieceId];
+    if (!piece) return false;
+    const { row, col, type } = piece;
+    const nr = row + dr;
+    const nc = col + dc;
+
+    // 边界检测
+    if (nr < 0 || nr + type.h > ROWS) return false;
+    if (nc < 0 || nc + type.w > COLS) return false;
+
+    // 空白格检测
+    for (let r = 0; r < type.h; r++) {
+        for (let c = 0; c < type.w; c++) {
+            const target = state.board[nr + r][nc + c];
+            if (target !== null && target !== pieceId) return false;
+        }
+    }
+    return true;
+}
+
+// ============ 移动执行 ============
+function movePiece(pieceId, dr, dc) {
+    if (!canMove(pieceId, dr, dc)) return false;
+
+    const piece = state.pieces[pieceId];
+    const { row, col, type } = piece;
+
+    // 从棋盘清除旧位置
+    for (let r = 0; r < type.h; r++) {
+        for (let c = 0; c < type.w; c++) {
+            state.board[row + r][col + c] = null;
+        }
+    }
+
+    // 更新位置
+    piece.row += dr;
+    piece.col += dc;
+
+    // 写入新位置
+    for (let r = 0; r < type.h; r++) {
+        for (let c = 0; c < type.w; c++) {
+            state.board[piece.row + r][piece.col + c] = pieceId;
+        }
+    }
+
+    state.steps++;
+    state.moveCount++;
+    stepCountEl.textContent = state.steps;
+
+    render();
+    updateUI();
+
+    // 检测胜利
+    if (checkWin()) {
+        setTimeout(showWin, 300);
+    }
+
+    return true;
+}
+
+// ============ 胜利检测 ============
+function checkWin() {
+    // 曹操（caocao）左上角到达 (3, 1) 即胜利
+    const cao = state.pieces.caocao;
+    return cao && cao.row === 3 && cao.col === 1;
+}
+
+// ============ 胜利弹窗 ============
+function showWin() {
+    const level = LEVELS[state.levelIdx];
+    winSteps.textContent = state.steps;
+    winLevel.textContent = level.name;
+    winModal.classList.add('active');
+}
+
+function hideWin() {
+    winModal.classList.remove('active');
+}
+
+// ============ UI 更新 ============
+function updateUI() {
+    // 更新按钮状态
+    const hasSelected = state.selected !== null;
+    $('btnUp').disabled = !hasSelected;
+    $('btnDown').disabled = !hasSelected;
+    $('btnLeft').disabled = !hasSelected;
+    $('btnRight').disabled = !hasSelected;
+}
+
+// ============ 关卡切换 ============
+function goToLevel(idx) {
+    if (idx < 0 || idx >= LEVELS.length) return;
+    hideWin();
+    loadLevel(idx);
+}
+
+function prevLevel() { goToLevel(state.levelIdx - 1); }
+function nextLevel() { goToLevel(state.levelIdx + 1); }
+
+function resetLevel() {
+    hideWin();
+    loadLevel(state.levelIdx);
+}
+
+// ============ 方向操作 ============
+function handleDirection(dir) {
+    if (!state.selected) return;
+    const dirMap = { up: [-1, 0], down: [1, 0], left: [0, -1], right: [0, 1] };
+    const [dr, dc] = dirMap[dir];
+    if (dr === undefined) return;
+    movePiece(state.selected, dr, dc);
+}
+
+// ============ 事件绑定 ============
+// 方向按钮
+document.querySelectorAll('.dir-btn').forEach(btn => {
+    btn.addEventListener('click', () => handleDirection(btn.dataset.dir));
+});
+
+// 键盘方向键
+document.addEventListener('keydown', (e) => {
+    const keyMap = {
+        'ArrowUp': 'up', 'ArrowDown': 'down',
+        'ArrowLeft': 'left', 'ArrowRight': 'right',
+    };
+    const dir = keyMap[e.key];
+    if (dir) {
+        e.preventDefault();
+        handleDirection(dir);
+    }
+});
+
+// 关卡按钮
+$('prevLevel').addEventListener('click', prevLevel);
+$('nextLevel').addEventListener('click', nextLevel);
+$('resetLevel').addEventListener('click', resetLevel);
+
+// 胜利弹窗按钮
+$('nextFromWin').addEventListener('click', () => {
+    hideWin();
+    if (state.levelIdx < LEVELS.length - 1) {
+        nextLevel();
+    } else {
+        goToLevel(0);
+    }
+});
+$('replayFromWin').addEventListener('click', () => {
+    hideWin();
+    resetLevel();
+});
+
+// 点击弹窗外部关闭（点击背景）
+winModal.addEventListener('click', (e) => {
+    if (e.target === winModal) hideWin();
+});
+
+// 窗口大小变化时重新渲染
+let resizeTimer;
+window.addEventListener('resize', () => {
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(render, 100);
+});
+
+// ============ 启动游戏 ============
+initBoard();
+loadLevel(0);
+</script>
+</body>
+</html>
