@@ -209,6 +209,21 @@
             box-shadow: 0 6px 16px rgba(20, 184, 166, 0.4);
         }
 
+        .card-chess {
+            background: linear-gradient(135deg, #eef7f2 0%, #d9f1e5 100%);
+        }
+        .card-chess:hover {
+            border-color: #10b981;
+            box-shadow: 0 10px 24px rgba(16, 185, 129, 0.25);
+        }
+        .card-chess .tool-btn {
+            background: linear-gradient(135deg, #0f766e 0%, #16a34a 100%);
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+        }
+        .card-chess .tool-btn:hover {
+            box-shadow: 0 6px 16px rgba(16, 185, 129, 0.4);
+        }
+
         .main-content {
             flex: 1;
         }
@@ -299,6 +314,20 @@
             </div>
 
             <div class="tools-grid">
+                <div class="tool-card card-chess">
+                    <div class="tool-icon">♟️</div>
+                    <h2>国际象棋</h2>
+                    <p>经典人机对弈，完整棋规与辅助提示，支持棋谱记录和悔棋</p>
+                    <a href="games/chess.html" class="tool-btn">开始游戏</a>
+                </div>
+
+                <div class="tool-card card-rose">
+                    <div class="tool-icon">🏯</div>
+                    <h2>华容道</h2>
+                    <p>三国经典滑块游戏，移动武将棋子，助曹操冲出重围</p>
+                    <a href="games/huarongdao.html" class="tool-btn">开始游戏</a>
+                </div>
+
                 <div class="tool-card card-red">
                     <div class="tool-icon">🎯</div>
                     <h2>FPS 打靶训练</h2>
@@ -332,13 +361,6 @@
                     <h2>贪吃蛇</h2>
                     <p>经典贪吃蛇游戏，方向键操控，支持暂停/继续、多档速度调节，自动保存最高分</p>
                     <a href="games/snake.html" class="tool-btn">开始游戏</a>
-                </div>
-
-                <div class="tool-card card-rose">
-                    <div class="tool-icon">🏯</div>
-                    <h2>华容道</h2>
-                    <p>三国经典滑块游戏，移动武将棋子，助曹操冲出重围</p>
-                    <a href="games/huarongdao.html" class="tool-btn">开始游戏</a>
                 </div>
             </div>
         </div>

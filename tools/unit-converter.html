@@ -5,154 +5,182 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>单位换算小工具</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-        }
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    body {
+        font-family: 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+        background: linear-gradient(135deg, #ecfdf5 0%, #d1fae5 100%);
+        min-height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 30px 16px;
+        color: #263238;
+    }
+
+    .container {
+        background: #ffffff;
+        border-radius: 20px;
+        box-shadow: 0 18px 50px rgba(16, 185, 129, 0.14);
+        max-width: 620px;
+        width: 100%;
+        padding: 30px;
+    }
+
+    h1 {
+        text-align: center;
+        margin-bottom: 8px;
+        font-weight: 700;
+        font-size: 28px;
+        letter-spacing: 1px;
+        background: linear-gradient(135deg, #059669, #10b981);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+
+    .section {
+        margin-top: 20px;
+        padding: 18px;
+        background: #f4fbf7;
+        border: 1px solid #d9efe4;
+        border-radius: 14px;
+        box-shadow: 0 8px 22px rgba(5, 150, 105, 0.06);
+    }
+
+    h2 {
+        font-size: 17px;
+        color: #047857;
+        margin-bottom: 12px;
+        font-weight: 700;
+    }
+
+    .unit-type-selector {
+        margin-bottom: 0;
+    }
+
+    .unit-type-selector select {
+        width: 100%;
+        padding: 11px 14px;
+        border: 1px solid #d2eadf;
+        border-radius: 10px;
+        font-size: 15px;
+        color: #064e3b;
+        background: #ffffff;
+        transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .unit-type-selector select:focus {
+        outline: none;
+        border-color: #10b981;
+        box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.12);
+    }
+
+    .conversion-section {
+        display: flex;
+        gap: 18px;
+        align-items: flex-start;
+    }
+
+    .input-group {
+        flex: 1;
+        min-width: 0;
+    }
+
+    input[type="number"] {
+        width: 100%;
+        padding: 11px 14px;
+        border: 1px solid #d2eadf;
+        border-radius: 10px;
+        margin-bottom: 13px;
+        font-size: 15px;
+        color: #064e3b;
+        background: #ffffff;
+        transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    input[type="number"]:focus {
+        outline: none;
+        border-color: #10b981;
+        box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.12);
+    }
+
+    select {
+        width: 100%;
+        padding: 11px 14px;
+        border: 1px solid #d2eadf;
+        border-radius: 10px;
+        font-size: 15px;
+        color: #064e3b;
+        background: #ffffff;
+        transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    select:focus {
+        outline: none;
+        border-color: #10b981;
+        box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.12);
+    }
+
+    .result {
+        margin-top: 0;
+        padding: 16px;
+        background: #f0fdf4;
+        border: 1px solid #bbf7d0;
+        border-radius: 12px;
+        word-wrap: break-word;
+    }
+
+    .result h3 {
+        font-size: 14px;
+        color: #047857;
+        margin-bottom: 8px;
+        font-weight: 700;
+    }
+
+    .result-value {
+        font-size: 20px;
+        font-weight: 700;
+        color: #065f46;
+        background: linear-gradient(135deg, #059669, #10b981);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+
+    .back-link {
+        display: inline-block;
+        margin-top: 22px;
+        padding: 9px 20px;
+        color: #059669;
+        text-decoration: none;
+        font-size: 14px;
+        font-weight: 700;
+        border: 1px solid #d2eadf;
+        border-radius: 12px;
+        transition: background 0.2s ease, color 0.2s ease, transform 0.2s ease;
+    }
+
+    .back-link:hover {
+        background: #059669;
+        color: #ffffff;
+        transform: translateY(-2px);
+    }
+
+    @media (max-width: 768px) {
         .container {
-            background-color: white;
-            padding: 40px;
-            border-radius: 16px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-            max-width: 600px;
-            width: 100%;
-            backdrop-filter: blur(10px);
+            padding: 22px;
         }
-        h1 {
-            text-align: center;
-            color: #333;
-            margin-bottom: 30px;
-            font-weight: 600;
-            font-size: 28px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-        .section {
-            margin-bottom: 30px;
-            padding: 20px;
-            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-            border-radius: 12px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-        }
-        h2 {
-            font-size: 18px;
-            color: #666;
-            margin-bottom: 15px;
-            font-weight: 500;
-        }
-        .unit-type-selector {
-            margin-bottom: 20px;
-        }
-        .unit-type-selector select {
-            width: 100%;
-            padding: 12px 16px;
-            border: 2px solid #e0e0e0;
-            border-radius: 8px;
-            font-size: 16px;
-            transition: all 0.3s ease;
-        }
-        .unit-type-selector select:focus {
-            outline: none;
-            border-color: #667eea;
-            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
-        }
+
         .conversion-section {
-            display: flex;
-            gap: 20px;
-            align-items: flex-start;
+            flex-direction: column;
         }
-        .input-group {
-            flex: 1;
-        }
-        input[type="number"] {
-            width: 100%;
-            padding: 12px 16px;
-            border: 2px solid #e0e0e0;
-            border-radius: 8px;
-            margin-bottom: 15px;
-            font-size: 16px;
-            transition: all 0.3s ease;
-        }
-        input[type="number"]:focus {
-            outline: none;
-            border-color: #667eea;
-            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
-        }
-        select {
-            width: 100%;
-            padding: 12px 16px;
-            border: 2px solid #e0e0e0;
-            border-radius: 8px;
-            font-size: 16px;
-            transition: all 0.3s ease;
-        }
-        select:focus {
-            outline: none;
-            border-color: #667eea;
-            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
-        }
-        .result {
-            margin-top: 20px;
-            padding: 20px;
-            background-color: white;
-            border-radius: 8px;
-            border: 2px solid #e0e0e0;
-            word-wrap: break-word;
-        }
-        .result h3 {
-            font-size: 16px;
-            color: #666;
-            margin-bottom: 10px;
-            font-weight: 500;
-        }
-        .result-value {
-            font-size: 20px;
-            font-weight: 600;
-            color: #333;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-        .back-link {
-            display: block;
-            text-align: center;
-            margin-top: 30px;
-            color: #667eea;
-            text-decoration: none;
-            font-size: 14px;
-            font-weight: 500;
-            padding: 10px 20px;
-            border: 2px solid #667eea;
-            border-radius: 25px;
-            transition: all 0.3s ease;
-        }
-        .back-link:hover {
-            background-color: #667eea;
-            color: white;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
-        }
-        @media (max-width: 768px) {
-            .container {
-                padding: 20px;
-            }
-            .conversion-section {
-                flex-direction: column;
-            }
-        }
-    </style>
+    }
+</style>
 </head>
 <body>
     <div class="container">
