@@ -62,7 +62,8 @@
             margin-bottom: 6px;
             font-weight: 500;
         }
-        .input-group input {
+        .input-group input,
+        .input-group select {
             width: 100%;
             padding: 12px 16px;
             border: 2px solid #e0e0e0;
@@ -70,7 +71,8 @@
             font-size: 16px;
             transition: all 0.3s ease;
         }
-        .input-group input:focus {
+        .input-group input:focus,
+        .input-group select:focus {
             outline: none;
             border-color: #667eea;
             box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
@@ -193,6 +195,247 @@
             transform: translateY(-2px);
             box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
         }
+        .subtitle {
+            text-align: center;
+            color: #999;
+            font-size: 13px;
+            margin-bottom: 24px;
+        }
+        .input-group input.invalid,
+        .input-group select.invalid {
+            border-color: #ff6b6b;
+            box-shadow: 0 0 0 3px rgba(255, 107, 107, 0.1);
+        }
+        .error-text {
+            min-height: 16px;
+            margin-top: 4px;
+            font-size: 12px;
+            color: #ff6b6b;
+        }
+        .input-row.three {
+            grid-template-columns: 1fr 1fr 1fr;
+        }
+        .section-head {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 12px;
+            flex-wrap: wrap;
+        }
+        .section-head h2 {
+            margin-bottom: 0;
+        }
+        .section-head .hint {
+            font-size: 12px;
+            color: #aaa;
+            font-weight: 400;
+        }
+        .btn-add {
+            padding: 8px 16px;
+            border: 2px dashed #667eea;
+            border-radius: 8px;
+            background: rgba(102, 126, 234, 0.06);
+            color: #667eea;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        .btn-add:hover {
+            background: rgba(102, 126, 234, 0.12);
+        }
+        .scenario-card {
+            position: relative;
+            padding: 16px;
+            border: 1px solid #e0e0e0;
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.85);
+        }
+        .scenario-card + .scenario-card {
+            margin-top: 12px;
+        }
+        .scenario-card .name-row {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+        .scenario-card .name-row input {
+            flex: 1;
+            padding: 8px 10px;
+            border: 1px solid #e0e0e0;
+            border-radius: 6px;
+            font-size: 13px;
+            min-width: 0;
+        }
+        .scenario-card .btn-remove {
+            flex: none;
+            padding: 8px 10px;
+            border: none;
+            border-radius: 6px;
+            background: #fff0f0;
+            color: #ff6b6b;
+            font-size: 12px;
+            cursor: pointer;
+        }
+        .scenario-card .btn-remove:hover {
+            background: #ffe0e0;
+        }
+        .scenario-card .scenario-error {
+            min-height: 16px;
+            margin-top: 6px;
+            font-size: 12px;
+            color: #ff6b6b;
+        }
+        .actions {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        .btn-calculate {
+            flex: none;
+            min-width: 160px;
+            width: auto;
+            display: inline-block;
+            padding: 14px 30px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+        }
+        .btn-calculate:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(102, 126, 234, 0.4);
+        }
+        .btn-calculate:active {
+            transform: translateY(0);
+        }
+        .btn-secondary {
+            padding: 12px 18px;
+            border: 2px solid #667eea;
+            border-radius: 8px;
+            background: white;
+            color: #667eea;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        .btn-secondary:hover {
+            background: #f5f7ff;
+        }
+        .scenario-summary-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 14px;
+            margin-bottom: 14px;
+        }
+        .scenario-summary {
+            padding: 16px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            background: white;
+        }
+        .scenario-summary .name {
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+        .scenario-summary .minor-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 5px 0;
+            border-top: 1px dashed #eee;
+            font-size: 13px;
+            color: #777;
+        }
+        .scenario-summary .minor-row b {
+            color: #333;
+            font-family: Consolas, 'Courier New', monospace;
+        }
+        .scenario-summary .final {
+            margin-top: 8px;
+            font-size: 12px;
+            color: #888;
+        }
+        .scenario-summary .final b {
+            display: block;
+            margin-top: 3px;
+            font-size: 22px;
+            font-weight: 700;
+        }
+        .export-row {
+            display: flex;
+            justify-content: flex-end;
+            margin-top: 12px;
+        }
+        .chart-wrap {
+            width: 100%;
+            background: white;
+            border: 1px solid #eee;
+            border-radius: 10px;
+            padding: 8px;
+            margin-bottom: 18px;
+        }
+        #balanceChart {
+            display: block;
+            width: 100%;
+            height: 280px;
+        }
+        .chart-legend {
+            display: flex;
+            gap: 16px;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin-top: 8px;
+            font-size: 12px;
+            color: #666;
+        }
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .legend-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+        }
+        .detail-tabs {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-bottom: 12px;
+        }
+        .detail-tab {
+            padding: 8px 16px;
+            border: 2px solid #d4d4d8;
+            border-radius: 999px;
+            background: white;
+            color: #666;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        .detail-tab:hover {
+            border-color: #667eea;
+            color: #667eea;
+        }
+        .detail-tab.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-color: transparent;
+            color: white;
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+        }
         @media (max-width: 768px) {
             .container {
                 padding: 20px;
@@ -201,6 +444,10 @@
                 grid-template-columns: 1fr;
             }
             .summary {
+                grid-template-columns: 1fr;
+            }
+            .input-row.three,
+            .scenario-summary-grid {
                 grid-template-columns: 1fr;
             }
             .result-table {
@@ -216,132 +463,535 @@
 <body>
     <div class="container">
         <h1>复利计算器</h1>
+        <p class="subtitle">支持多方案对比 · 年/月复利 · 定期追加投资 · 收益走势图</p>
 
         <div class="section">
-            <h2>输入参数</h2>
-            <div class="input-row">
-                <div class="input-group">
-                    <label for="principal">本金（元）</label>
-                    <input type="number" id="principal" placeholder="例如：100000" min="0" step="1000">
-                </div>
-                <div class="input-group">
-                    <label for="rate">预期年化收益率（%）</label>
-                    <input type="number" id="rate" placeholder="例如：5" min="0" max="100" step="0.1">
-                </div>
+            <div class="section-head">
+                <h2>投资方案</h2>
+                <span class="hint">最多 3 个方案</span>
             </div>
-            <div class="input-row">
-                <div class="input-group">
-                    <label for="years">投资年数</label>
-                    <input type="number" id="years" placeholder="例如：10" min="1" max="100" step="1">
-                </div>
-                <div class="input-group">
-                    <label for="annualAdd">每年追加投资（元）</label>
-                    <input type="number" id="annualAdd" placeholder="例如：12000" min="0" step="1000">
-                </div>
+            <div id="scenarioList"></div>
+            <button class="btn-add" id="addScenario" type="button">＋ 添加对比方案</button>
+            <div class="actions" style="margin-top:16px;">
+                <button class="btn-calculate" id="calculateBtn" type="button">开始计算</button>
+                <button class="btn-secondary" id="resetBtn" type="button">重置参数</button>
+                <button class="btn-secondary" id="exampleBtn" type="button">填充示例</button>
             </div>
-            <button class="btn-calculate" onclick="calculate()">开始计算</button>
         </div>
 
         <div class="section result-section" id="resultSection" style="display:none;">
-            <h2>计算结果</h2>
-            <div class="summary">
-                <div class="summary-item">
-                    <div class="label">总投入金额</div>
-                    <div class="value" id="totalInvested">0</div>
-                </div>
-                <div class="summary-item">
-                    <div class="label">总收益金额</div>
-                    <div class="value" id="totalEarnings">0</div>
-                </div>
-                <div class="summary-item">
-                    <div class="label">最终总金额</div>
-                    <div class="value" id="finalTotal">0</div>
-                </div>
+            <div class="section-head">
+                <h2>计算结果</h2>
+                <span class="hint" id="resultHint"></span>
             </div>
+            <div id="summaryContainer"></div>
+            <div class="chart-wrap">
+                <canvas id="balanceChart" width="820" height="280"></canvas>
+                <div class="chart-legend" id="chartLegend"></div>
+            </div>
+            <div class="section-head">
+                <h2>年度明细</h2>
+                <span class="hint">点击页签切换方案明细</span>
+            </div>
+            <div class="detail-tabs" id="detailTabs"></div>
             <table class="result-table">
                 <thead>
                     <tr>
                         <th>年份</th>
-                        <th>年初本金</th>
+                        <th>年初金额</th>
                         <th>当年收益</th>
-                        <th>追加投资</th>
-                        <th>年末总金额</th>
+                        <th>当期追加</th>
+                        <th>期末金额</th>
                     </tr>
                 </thead>
                 <tbody id="resultBody">
                 </tbody>
             </table>
+            <div class="export-row">
+                <button class="btn-secondary" id="exportBtn" type="button">导出 CSV</button>
+            </div>
         </div>
 
         <a href="../index.html" class="back-link">返回主页</a>
     </div>
 
     <script>
-        function calculate() {
-            var principal = parseFloat(document.getElementById('principal').value) || 0;
-            var rate = (parseFloat(document.getElementById('rate').value) || 0) / 100;
-            var years = parseInt(document.getElementById('years').value) || 0;
-            var annualAdd = parseFloat(document.getElementById('annualAdd').value) || 0;
+        var DEFAULT_SCENARIOS = [
+            { name: '方案 1', principal: '100000', rate: '8', period: 'annual', years: '30', add: '60000', timing: 'end' },
+            { name: '方案 2', principal: '200000', rate: '5', period: 'annual', years: '30', add: '0', timing: 'end' }
+        ];
+        var EXAMPLE_SCENARIOS = [
+            { name: '稳健型', principal: '50000', rate: '4', period: 'annual', years: '20', add: '60000', timing: 'end' },
+            { name: '进取型', principal: '100000', rate: '10', period: 'monthly', years: '20', add: '120000', timing: 'start' }
+        ];
+        var MAX_SCENARIOS = 3;
+        var scenarioList = document.getElementById('scenarioList');
+        var addScenarioBtn = document.getElementById('addScenario');
+        var calculateBtn = document.getElementById('calculateBtn');
+        var resetBtn = document.getElementById('resetBtn');
+        var exampleBtn = document.getElementById('exampleBtn');
+        var exportBtn = document.getElementById('exportBtn');
 
-            if (principal <= 0 && annualAdd <= 0) {
-                alert('请输入本金或每年追加投资金额');
-                return;
-            }
-            if (years <= 0) {
-                alert('请输入有效的投资年数');
-                return;
-            }
-            if (rate <= 0) {
-                alert('请输入有效的预期年化收益率');
-                return;
-            }
+        function createScenarioUI(scenario, index) {
+            var card = document.createElement('div');
+            card.className = 'scenario-card';
 
-            var currentAmount = principal;
-            var totalInvested = principal;
-            var totalEarnings = 0;
-            var rows = [];
+            var nameRow = document.createElement('div');
+            nameRow.className = 'name-row';
+            var nameInput = document.createElement('input');
+            nameInput.type = 'text';
+            nameInput.maxLength = '12';
+            nameInput.placeholder = '方案名称';
+            nameInput.value = scenario.name || '';
+            var removeBtn = document.createElement('button');
+            removeBtn.type = 'button';
+            removeBtn.className = 'btn-remove';
+            removeBtn.textContent = '删除';
+            nameRow.appendChild(nameInput);
+            nameRow.appendChild(removeBtn);
+            card.appendChild(nameRow);
 
-            for (var year = 1; year <= years; year++) {
-                var startAmount = currentAmount;
-                var earnings = startAmount * rate;
-                currentAmount = startAmount + earnings + annualAdd;
-                totalInvested += annualAdd;
-                totalEarnings += earnings;
-
-                rows.push({
-                    year: year,
-                    startAmount: startAmount,
-                    earnings: earnings,
-                    annualAdd: annualAdd,
-                    endAmount: currentAmount
+            var rows = [
+                [
+                    ['principal_' + index, '本金（元）', 'number', scenario.principal, '例如：100000'],
+                    ['rate_' + index, '预期年化收益率（%）', 'number', scenario.rate, '例如：8']
+                ],
+                [
+                    ['years_' + index, '投资年数', 'number', scenario.years, '例如：30'],
+                    ['add_' + index, '每年追加投资（元）', 'number', scenario.add, '例如：60000']
+                ]
+            ];
+            rows.forEach(function (pair) {
+                var row = document.createElement('div');
+                row.className = 'input-row';
+                pair.forEach(function (field) {
+                    row.appendChild(createInputGroup(field[0], field[1], field[2], field[3], field[4]));
                 });
-            }
-
-            document.getElementById('totalInvested').textContent = '\u00A5' + totalInvested.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
-            document.getElementById('totalEarnings').textContent = '\u00A5' + totalEarnings.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
-            document.getElementById('finalTotal').textContent = '\u00A5' + currentAmount.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
-
-            var tbody = document.getElementById('resultBody');
-            tbody.innerHTML = '';
-            rows.forEach(function(row) {
-                var tr = document.createElement('tr');
-                tr.innerHTML =
-                    '<td>\u7B2C ' + row.year + ' \u5E74</td>' +
-                    '<td>\u00A5' + row.startAmount.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ',') + '</td>' +
-                    '<td>\u00A5' + row.earnings.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ',') + '</td>' +
-                    '<td>\u00A5' + row.annualAdd.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ',') + '</td>' +
-                    '<td>\u00A5' + row.endAmount.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ',') + '</td>';
-                tbody.appendChild(tr);
+                card.appendChild(row);
             });
 
-            document.getElementById('resultSection').style.display = 'block';
+            var settings = document.createElement('div');
+            settings.className = 'input-row';
+            settings.appendChild(createSelectGroup('period_' + index, '', '复利周期', scenario.period));
+            settings.appendChild(createSelectGroup('timing_' + index, '', '追加时机', scenario.timing));
+            card.appendChild(settings);
+
+            card.querySelector('.btn-remove').addEventListener('click', function () {
+                allScenarios.splice(index, 1);
+                renderScenarios();
+            });
+            return card;
         }
 
-        document.addEventListener('keydown', function(e) {
-            if (e.key === 'Enter') {
+        function createInputGroup(id, label, type, value, placeholder) {
+            var group = document.createElement('div');
+            group.className = 'input-group';
+            var lab = document.createElement('label');
+            lab.textContent = label;
+            lab.setAttribute('for', id);
+            var input = document.createElement('input');
+            input.type = type;
+            input.id = id;
+            input.placeholder = placeholder || '';
+            if (type === 'number') input.step = 'any';
+            if (value !== null && value !== undefined) input.value = value;
+            group.appendChild(lab);
+            group.appendChild(input);
+            return group;
+        }
+
+        function createSelectGroup(id, placeholder, label, value) {
+            var group = document.createElement('div');
+            group.className = 'input-group';
+            var lab = document.createElement('label');
+            lab.textContent = label || '复利周期';
+            lab.setAttribute('for', id);
+            var select = document.createElement('select');
+            select.id = id;
+            var opts;
+            if (id.indexOf('period_') === 0) {
+                opts = [
+                    ['annual', '按年复利'],
+                    ['monthly', '按月复利']
+                ];
+            } else {
+                opts = [
+                    ['end', '每年末追加'],
+                    ['start', '每年初追加']
+                ];
+            }
+            opts.forEach(function (pair) {
+                var option = document.createElement('option');
+                option.value = pair[0];
+                option.textContent = pair[1];
+                select.appendChild(option);
+            });
+            if (value) select.value = value;
+            group.appendChild(lab);
+            group.appendChild(select);
+            return group;
+        }
+
+        var allScenarios = [];
+        var currentResults = [];
+        var currentDetailIndex = 0;
+
+        function renderScenarios() {
+            while (scenarioList.firstChild) scenarioList.removeChild(scenarioList.firstChild);
+            allScenarios.forEach(function (scenario, index) {
+                scenarioList.appendChild(createScenarioUI(scenario, index));
+            });
+            updateAddButton();
+        }
+
+        function updateAddButton() {
+            addScenarioBtn.style.display = allScenarios.length >= MAX_SCENARIOS ? 'none' : 'inline-block';
+        }
+
+        function addScenario(scenario, silent) {
+            if (allScenarios.length >= MAX_SCENARIOS) {
+                if (!silent) alert('最多添加 ' + MAX_SCENARIOS + ' 个方案');
+                return;
+            }
+            var newScenario = scenario || { name: '方案 ' + (allScenarios.length + 1), principal: '0', rate: '6', period: 'annual', years: '20', add: '0', timing: 'end' };
+            allScenarios.push(newScenario);
+            renderScenarios();
+        }
+
+        function resetScenarios() {
+            allScenarios = DEFAULT_SCENARIOS.map(function (s) { return JSON.parse(JSON.stringify(s)); });
+            renderScenarios();
+        }
+
+        addScenarioBtn.addEventListener('click', function () { addScenario(null, false); });
+        resetBtn.addEventListener('click', resetScenarios);
+        exampleBtn.addEventListener('click', function () {
+            allScenarios = EXAMPLE_SCENARIOS.map(function (s) { return JSON.parse(JSON.stringify(s)); });
+            renderScenarios();
+        });
+        calculateBtn.addEventListener('click', calculate);
+        exportBtn.addEventListener('click', exportCSV);
+
+        document.addEventListener('keydown', function (e) {
+            if (e.key === 'Enter' && e.target && (e.target.tagName === 'INPUT' || e.target.tagName === 'SELECT')) {
                 calculate();
             }
         });
+
+        function calculate() {
+            if (!readScenariosFromUI()) return;
+            var results = allScenarios.map(calculateScenario);
+            results.sort(function (a, b) { return b.finalAmount - a.finalAmount; });
+            renderSummaries(results);
+            renderChart(results);
+            currentResults = results;
+            currentDetailIndex = 0;
+            renderDetailTabs(results);
+            if (results[0]) renderTable(results[0]);
+            document.getElementById('resultSection').style.display = 'block';
+            document.getElementById('resultSection').scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+
+        function readScenariosFromUI() {
+            var cards = scenarioList.querySelectorAll('.scenario-card');
+            if (!cards.length) {
+                alert('请至少添加一个投资方案');
+                return false;
+            }
+            var valid = true;
+            allScenarios = [];
+            cards.forEach(function (card, index) {
+                var name = card.querySelector('.name-row input').value.trim() || ('方案 ' + (index + 1));
+                var fields = {
+                    principal: card.querySelector('[id^="principal_"]'),
+                    rate: card.querySelector('[id^="rate_"]'),
+                    years: card.querySelector('[id^="years_"]'),
+                    add: card.querySelector('[id^="add_"]'),
+                    period: card.querySelector('[id^="period_"]'),
+                    timing: card.querySelector('[id^="timing_"]')
+                };
+                var error = card.querySelector('.scenario-error');
+                if (error) error.textContent = '';
+                Object.keys(fields).forEach(function (key) {
+                    if (fields[key]) fields[key].classList.remove('invalid');
+                });
+
+                var principalValue = fields.principal ? fields.principal.value.trim() : '';
+                var rateValue = fields.rate ? fields.rate.value.trim() : '';
+                var yearsValue = fields.years ? fields.years.value.trim() : '';
+                var addValue = fields.add ? fields.add.value.trim() : '0';
+                var principalNum = Number(principalValue);
+                var rateNum = Number(rateValue);
+                var yearsNum = Number(yearsValue);
+                var addNum = Number(addValue);
+
+                if (principalValue === '' || !isFinite(principalNum) || principalNum < 0) {
+                    markError(card, '本金需为非负数字', 'principal');
+                    valid = false;
+                }
+                if (rateValue === '' || !isFinite(rateNum) || rateNum < 0) {
+                    markError(card, '收益率需为非负数字', 'rate');
+                    valid = false;
+                }
+                if (yearsValue === '' || !isFinite(yearsNum) || yearsNum <= 0 || Math.round(yearsNum) !== yearsNum || yearsNum > 100) {
+                    markError(card, '投资年数需为 1 至 100 的整数', 'years');
+                    valid = false;
+                }
+                if (addValue === '' || !isFinite(addNum) || addNum < 0) {
+                    markError(card, '追加投资需为非负数字', 'add');
+                    valid = false;
+                }
+                if ((principalValue === '' || principalNum === 0) && (addValue === '' || addNum === 0)) {
+                    markError(card, '本金与追加投资不能同时为 0', 'principal');
+                    valid = false;
+                }
+                allScenarios.push({
+                    name: name,
+                    principal: principalNum,
+                    rate: rateNum,
+                    years: yearsNum,
+                    add: addNum,
+                    timing: fields.timing ? fields.timing.value : 'end',
+                    period: fields.period ? fields.period.value : 'annual'
+                });
+            });
+            return valid;
+        }
+
+        function markError(card, message, fieldName) {
+            var error = card.querySelector('.scenario-error');
+            if (!error) {
+                error = document.createElement('div');
+                error.className = 'scenario-error';
+                card.appendChild(error);
+            }
+            error.textContent = message;
+            var selector = fieldName === 'period' || fieldName === 'timing' ? '[id^="' + fieldName + '_"]' : ('[id^="' + fieldName + '_"]');
+            var el = card.querySelector(selector);
+            if (el) el.classList.add('invalid');
+        }
+
+        function calculateScenario(config) {
+            var principal = config.principal;
+            var ratePercent = config.rate;
+            var years = config.years;
+            var add = config.add;
+            var timing = config.timing;
+            var period = config.period;
+            var periodsPerYear = period === 'monthly' ? 12 : 1;
+            var rate = ratePercent / 100;
+            var periodRate = rate / periodsPerYear;
+            var current = principal;
+            var rows = [];
+            var totalInvested = principal;
+
+            for (var year = 1; year <= years; year++) {
+                var startAmount = current;
+                var yearlyAdd = add;
+                if (timing === 'start') {
+                    current += yearlyAdd;
+                    totalInvested += yearlyAdd;
+                }
+
+                var earnings = 0;
+                var month = 0;
+                while (month < periodsPerYear) {
+                    var monthEarnings = current * periodRate;
+                    current += monthEarnings;
+                    earnings += monthEarnings;
+                    month++;
+                }
+
+                if (timing === 'end') {
+                    current += yearlyAdd;
+                    totalInvested += yearlyAdd;
+                }
+
+                rows.push({
+                    period: year,
+                    startAmount: startAmount,
+                    earnings: earnings,
+                    add: add,
+                    endAmount: current
+                });
+            }
+
+            return {
+                config: config,
+                totalInvested: totalInvested,
+                finalAmount: current,
+                totalEarnings2: current - totalInvested,
+                rows: rows,
+                totalPeriods: years * periodsPerYear
+            };
+        }
+
+        function formatMoney(value) {
+            return '¥' + Number(value).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+        }
+
+        function renderSummaries(results) {
+            var container = document.getElementById('summaryContainer');
+            container.innerHTML = '';
+            var grid = document.createElement('div');
+            grid.className = 'scenario-summary-grid';
+            results.forEach(function (result) {
+                var item = document.createElement('div');
+                item.className = 'scenario-summary';
+                var netEarnings = result.totalEarnings2;
+                item.innerHTML =
+                    '<div class="name">' + escapeHtml(result.config.name) + '</div>' +
+                    '<div class="minor-row"><span>总投入</span><b>' + formatMoney(result.totalInvested) + '</b></div>' +
+                    '<div class="minor-row"><span>总收益</span><b>' + formatMoney(netEarnings) + '</b></div>' +
+                    '<div class="minor-row"><span>收益占比</span><b>' + (result.totalInvested > 0 ? netEarnings / result.totalInvested * 100 : 0).toFixed(1) + '%</b></div>' +
+                    '<div class="final">最终总金额<b>' + formatMoney(result.finalAmount) + '</b></div>';
+                grid.appendChild(item);
+            });
+            container.appendChild(grid);
+            document.getElementById('resultHint').textContent = results.length > 1 ? results.length + ' 个方案对比' : '单方案结果';
+        }
+
+        function renderChart(results) {
+            var canvas = document.getElementById('balanceChart');
+            var ctx = canvas.getContext('2d');
+            canvas.width = canvas.parentElement.clientWidth || 820;
+            canvas.style.height = '280px';
+            canvas.height = 280;
+            var width = canvas.width;
+            var height = canvas.height;
+            var paddingLeft = 64;
+            var paddingRight = 24;
+            var paddingTop = 20;
+            var paddingBottom = 40;
+            var maxYears = 0;
+            results.forEach(function (r) {
+                if (r.config.years > maxYears) maxYears = r.config.years;
+            });
+            var series = results.map(function (r) {
+                var points = [];
+                r.rows.forEach(function (row) {
+                    points.push({ year: row.period, value: row.endAmount });
+                });
+                return { config: r.config, points: points };
+            });
+            var maxValue = 0;
+            series.forEach(function (s) {
+                s.points.forEach(function (p) {
+                    if (p.value > maxValue) maxValue = p.value;
+                });
+            });
+            maxValue = maxValue || 1;
+            var chartColors = ['#667eea', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6'];
+            ctx.clearRect(0, 0, width, height);
+            var xFor = function (year) {
+                return paddingLeft + (year / maxYears) * (width - paddingLeft - paddingRight);
+            };
+            var yFor = function (value) {
+                return paddingTop + (1 - value / maxValue) * (height - paddingTop - paddingBottom);
+            };
+            ctx.strokeStyle = '#e5e7eb';
+            ctx.lineWidth = 1;
+            for (var i = 0; i <= Math.min(6, maxYears); i++) {
+                var yr = Math.round(i * maxYears / Math.min(6, maxYears));
+                var x = xFor(yr);
+                ctx.beginPath();
+                ctx.moveTo(x, paddingTop);
+                ctx.lineTo(x, height - paddingBottom);
+                ctx.stroke();
+                ctx.fillStyle = '#999';
+                ctx.font = '11px Segoe UI';
+                ctx.textAlign = 'center';
+                ctx.fillText(yr + '年', x, height - paddingBottom + 18);
+            }
+            series.forEach(function (s, idx) {
+                var color = chartColors[idx % chartColors.length];
+                ctx.strokeStyle = color;
+                ctx.lineWidth = 2;
+                ctx.beginPath();
+                s.points.forEach(function (p, i2) {
+                    var px = xFor(p.year);
+                    var py = yFor(p.value);
+                    if (i2 === 0) ctx.moveTo(px, py);
+                    else ctx.lineTo(px, py);
+                });
+                ctx.stroke();
+            });
+            var legend = document.getElementById('chartLegend');
+            legend.innerHTML = '';
+            series.forEach(function (s, idx) {
+                var color = chartColors[idx % chartColors.length];
+                var item = document.createElement('div');
+                item.className = 'legend-item';
+                item.innerHTML = '<span class="legend-dot" style="background:' + color + '"></span><span>' + escapeHtml(s.config.name) + '</span>';
+                legend.appendChild(item);
+            });
+        }
+
+        function renderTable(result) {
+            var tbody = document.getElementById('resultBody');
+            tbody.innerHTML = '';
+            result.rows.forEach(function (row) {
+                var tr = document.createElement('tr');
+                var label = '第 ' + row.period + ' 年';
+                tr.innerHTML =
+                    '<td>' + label + '</td>' +
+                    '<td>' + formatMoney(row.startAmount) + '</td>' +
+                    '<td>' + formatMoney(row.earnings) + '</td>' +
+                    '<td>' + formatMoney(row.add) + '</td>' +
+                    '<td>' + formatMoney(row.endAmount) + '</td>';
+                tbody.appendChild(tr);
+            });
+        }
+
+        function renderDetailTabs(results) {
+            var tabs = document.getElementById('detailTabs');
+            tabs.innerHTML = '';
+            results.forEach(function (result, index) {
+                var button = document.createElement('button');
+                button.type = 'button';
+                button.className = 'detail-tab' + (index === currentDetailIndex ? ' active' : '');
+                button.textContent = result.config.name || ('方案 ' + (index + 1));
+                button.addEventListener('click', function () {
+                    currentDetailIndex = index;
+                    var allButtons = tabs.querySelectorAll('.detail-tab');
+                    allButtons.forEach(function (btn, btnIndex) {
+                        btn.className = 'detail-tab' + (btnIndex === currentDetailIndex ? ' active' : '');
+                    });
+                    renderTable(results[currentDetailIndex]);
+                });
+                tabs.appendChild(button);
+            });
+        }
+
+        function exportCSV() {
+            if (!readScenariosFromUI()) return;
+            var results = allScenarios.map(calculateScenario);
+            if (!results.length) return;
+            var rows = [['方案', '年份', '年初金额', '当年收益', '当期追加', '期末金额']];
+            results.forEach(function (r) {
+                var scenarioName = String(r.config.name).replace(/"/g, '""');
+                r.rows.forEach(function (row) {
+                    rows.push(['"' + scenarioName + '"', row.period, row.startAmount.toFixed(2), row.earnings.toFixed(2), row.add.toFixed(2), row.endAmount.toFixed(2)]);
+                });
+            });
+            var csv = '\ufeff' + rows.map(function (line) { return line.join(','); }).join('\n');
+            var blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+            var link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = '复利计算器结果.csv';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            URL.revokeObjectURL(link.href);
+        }
+
+        function escapeHtml(str) {
+            return String(str).replace(/[&<>"']/g, function (c) {
+                return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+            });
+        }
+
+        resetScenarios();
     </script>
 </body>
 </html>
