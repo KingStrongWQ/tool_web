@@ -133,6 +133,21 @@
             box-shadow: 0 6px 16px rgba(245, 158, 11, 0.4);
         }
 
+        .card-indigo {
+            background: linear-gradient(135deg, #e0e7ff 0%, #c7d2fe 100%);
+        }
+        .card-indigo:hover {
+            border-color: #6366f1;
+            box-shadow: 0 10px 24px rgba(99, 102, 241, 0.25);
+        }
+        .card-indigo .tool-btn {
+            background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
+            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+        }
+        .card-indigo .tool-btn:hover {
+            box-shadow: 0 6px 16px rgba(99, 102, 241, 0.4);
+        }
+
         /* 卡片配色 - 游戏类 */
         .card-red {
             background: linear-gradient(135deg, #ffe4e6 0%, #fecdd3 100%);
@@ -306,6 +321,13 @@
                     <h2>复利计算器</h2>
                     <p>输入本金、年化收益率、投资年数和每年追加投资，计算逐年复利收益明细</p>
                     <a href="tools/compound-interest.html" class="tool-btn">使用工具</a>
+                </div>
+
+                <div class="tool-card card-indigo">
+                    <div class="tool-icon">🏠</div>
+                    <h2>房贷计算器</h2>
+                    <p>支持等额本息与等额本金，计算月供、利息总额和逐年或逐月还款明细</p>
+                    <a href="tools/mortgage-calculator.html" class="tool-btn">使用工具</a>
                 </div>
             </div>
 

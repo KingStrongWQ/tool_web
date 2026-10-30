@@ -173,23 +173,6 @@
         transform: translateY(-1px);
     }
 
-    .btn-add {
-        padding: 8px 16px;
-        border: 2px dashed #e3b96c;
-        border-radius: 10px;
-        background: rgba(245, 158, 11, 0.06);
-        color: #b45309;
-        font-size: 13px;
-        font-weight: 700;
-        cursor: pointer;
-        transition: background 0.2s ease, border-color 0.2s ease;
-    }
-
-    .btn-add:hover {
-        background: rgba(245, 158, 11, 0.14);
-        border-color: #f59e0b;
-    }
-
     .scenario-card {
         position: relative;
         padding: 16px;
@@ -199,49 +182,18 @@
         box-shadow: 0 4px 14px rgba(217, 119, 6, 0.05);
     }
 
-    .scenario-card + .scenario-card {
-        margin-top: 12px;
-    }
-
-    .scenario-card .name-row {
-        display: flex;
-        gap: 8px;
-        align-items: center;
-        margin-bottom: 12px;
-    }
-
-    .scenario-card .name-row input {
-        flex: 1;
-        padding: 9px 11px;
-        border: 1px solid #f0dfb6;
-        border-radius: 8px;
-        font-size: 13px;
-        color: #5f4313;
-        min-width: 0;
-        background: #ffffff;
-    }
-
-    .scenario-card .btn-remove {
-        flex: none;
-        padding: 8px 10px;
-        border: none;
-        border-radius: 8px;
-        background: #fff0ee;
-        color: #dc2626;
-        font-size: 12px;
-        cursor: pointer;
-        transition: background 0.2s ease;
-    }
-
-    .scenario-card .btn-remove:hover {
-        background: #ffe0e0;
-    }
-
     .scenario-card .scenario-error {
         min-height: 16px;
         margin-top: 6px;
         font-size: 12px;
         color: #dc2626;
+    }
+
+    .field-note {
+        min-height: 16px;
+        margin-top: 4px;
+        font-size: 12px;
+        color: #a1844a;
     }
 
     .actions {
@@ -257,8 +209,10 @@
 
     .result-table {
         width: 100%;
+        min-width: 640px;
         border-collapse: collapse;
         font-size: 14px;
+        font-variant-numeric: tabular-nums;
         border-radius: 10px;
         overflow: hidden;
     }
@@ -357,7 +311,7 @@
 
     .scenario-summary-grid {
         display: grid;
-        grid-template-columns: repeat(2, 1fr);
+        grid-template-columns: 1fr;
         gap: 14px;
         margin-bottom: 14px;
     }
@@ -368,13 +322,6 @@
         border-radius: 12px;
         background: #ffffff;
         box-shadow: 0 4px 14px rgba(217, 119, 6, 0.05);
-    }
-
-    .scenario-summary .name {
-        font-size: 14px;
-        font-weight: 700;
-        margin-bottom: 10px;
-        color: #b45309;
     }
 
     .scenario-summary .minor-row {
@@ -388,7 +335,12 @@
     }
 
     .scenario-summary .minor-row b {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-end;
+        gap: 2px;
         color: #5f4313;
+        font-variant-numeric: tabular-nums;
         font-family: Consolas, 'Courier New', monospace;
     }
 
@@ -404,6 +356,17 @@
         font-size: 22px;
         font-weight: 700;
         color: #b45309;
+        font-variant-numeric: tabular-nums;
+    }
+
+    .scenario-summary .exact-value {
+        display: block;
+        margin-top: 3px;
+        font-family: Consolas, 'Courier New', monospace;
+        font-size: 12px;
+        font-weight: 400;
+        color: #a1844a;
+        text-align: right;
     }
 
     .export-row {
@@ -447,37 +410,6 @@
         width: 10px;
         height: 10px;
         border-radius: 50%;
-    }
-
-    .detail-tabs {
-        display: flex;
-        gap: 8px;
-        flex-wrap: wrap;
-        margin-bottom: 12px;
-    }
-
-    .detail-tab {
-        padding: 8px 16px;
-        border: 1px solid #ead9ac;
-        border-radius: 999px;
-        background: #ffffff;
-        color: #8a6d3b;
-        font-size: 13px;
-        font-weight: 700;
-        cursor: pointer;
-        transition: all 0.2s ease;
-    }
-
-    .detail-tab:hover {
-        border-color: #f59e0b;
-        color: #b45309;
-    }
-
-    .detail-tab.active {
-        background: linear-gradient(135deg, #d97706, #f59e0b);
-        border-color: transparent;
-        color: #ffffff;
-        box-shadow: 0 4px 12px rgba(217, 119, 6, 0.25);
     }
 
     .back-link {
@@ -528,15 +460,13 @@
 <body>
     <div class="container">
         <h1>复利计算器</h1>
-        <p class="subtitle">支持多方案对比 · 年/月复利 · 定期追加投资 · 收益走势图</p>
+        <p class="subtitle">年/月复利 · 定期追加投资 · 收益走势图</p>
 
         <div class="section">
             <div class="section-head">
-                <h2>投资方案</h2>
-                <span class="hint">最多 3 个方案</span>
+                <h2>投资参数</h2>
             </div>
             <div id="scenarioList"></div>
-            <button class="btn-add" id="addScenario" type="button">＋ 添加对比方案</button>
             <div class="actions" style="margin-top:16px;">
                 <button class="btn-calculate" id="calculateBtn" type="button">开始计算</button>
                 <button class="btn-secondary" id="resetBtn" type="button">重置参数</button>
@@ -556,17 +486,16 @@
             </div>
             <div class="section-head">
                 <h2>年度明细</h2>
-                <span class="hint">点击页签切换方案明细</span>
+                <span class="hint" id="detailHint"></span>
             </div>
-            <div class="detail-tabs" id="detailTabs"></div>
             <table class="result-table">
                 <thead>
                     <tr>
                         <th>年份</th>
-                        <th>年初金额</th>
-                        <th>当年收益</th>
-                        <th>当期追加</th>
-                        <th>期末金额</th>
+                        <th>年初金额（万元）</th>
+                        <th>当年收益（万元）</th>
+                        <th>当期追加（万元）</th>
+                        <th>期末金额（万元）</th>
                     </tr>
                 </thead>
                 <tbody id="resultBody">
@@ -582,16 +511,12 @@
 
     <script>
         var DEFAULT_SCENARIOS = [
-            { name: '方案 1', principal: '100000', rate: '8', period: 'annual', years: '30', add: '60000', timing: 'end' },
-            { name: '方案 2', principal: '200000', rate: '5', period: 'annual', years: '30', add: '0', timing: 'end' }
+            { principal: '100000', rate: '8', period: 'annual', years: '30', add: '60000', timing: 'end' }
         ];
         var EXAMPLE_SCENARIOS = [
-            { name: '稳健型', principal: '50000', rate: '4', period: 'annual', years: '20', add: '60000', timing: 'end' },
-            { name: '进取型', principal: '100000', rate: '10', period: 'monthly', years: '20', add: '120000', timing: 'start' }
+            { principal: '50000', rate: '4', period: 'annual', years: '20', add: '60000', timing: 'end' }
         ];
-        var MAX_SCENARIOS = 3;
         var scenarioList = document.getElementById('scenarioList');
-        var addScenarioBtn = document.getElementById('addScenario');
         var calculateBtn = document.getElementById('calculateBtn');
         var resetBtn = document.getElementById('resetBtn');
         var exampleBtn = document.getElementById('exampleBtn');
@@ -600,21 +525,6 @@
         function createScenarioUI(scenario, index) {
             var card = document.createElement('div');
             card.className = 'scenario-card';
-
-            var nameRow = document.createElement('div');
-            nameRow.className = 'name-row';
-            var nameInput = document.createElement('input');
-            nameInput.type = 'text';
-            nameInput.maxLength = '12';
-            nameInput.placeholder = '方案名称';
-            nameInput.value = scenario.name || '';
-            var removeBtn = document.createElement('button');
-            removeBtn.type = 'button';
-            removeBtn.className = 'btn-remove';
-            removeBtn.textContent = '删除';
-            nameRow.appendChild(nameInput);
-            nameRow.appendChild(removeBtn);
-            card.appendChild(nameRow);
 
             var rows = [
                 [
@@ -641,10 +551,6 @@
             settings.appendChild(createSelectGroup('timing_' + index, '', '追加时机', scenario.timing));
             card.appendChild(settings);
 
-            card.querySelector('.btn-remove').addEventListener('click', function () {
-                allScenarios.splice(index, 1);
-                renderScenarios();
-            });
             return card;
         }
 
@@ -662,7 +568,23 @@
             if (value !== null && value !== undefined) input.value = value;
             group.appendChild(lab);
             group.appendChild(input);
+            if (id.indexOf('principal_') === 0 || id.indexOf('add_') === 0) {
+                var note = document.createElement('div');
+                note.className = 'field-note';
+                group.appendChild(note);
+                input.addEventListener('input', function () {
+                    updateFieldNote(input, note);
+                });
+                updateFieldNote(input, note);
+            }
             return group;
+        }
+
+        function updateFieldNote(input, note) {
+            var value = Number(input.value);
+            note.textContent = input.value.trim() !== '' && isFinite(value) && value >= 0
+                ? '折算：' + formatDisplayAmount(value)
+                : '';
         }
 
         function createSelectGroup(id, placeholder, label, value) {
@@ -698,29 +620,11 @@
         }
 
         var allScenarios = [];
-        var currentResults = [];
-        var currentDetailIndex = 0;
-
         function renderScenarios() {
             while (scenarioList.firstChild) scenarioList.removeChild(scenarioList.firstChild);
             allScenarios.forEach(function (scenario, index) {
                 scenarioList.appendChild(createScenarioUI(scenario, index));
             });
-            updateAddButton();
-        }
-
-        function updateAddButton() {
-            addScenarioBtn.style.display = allScenarios.length >= MAX_SCENARIOS ? 'none' : 'inline-block';
-        }
-
-        function addScenario(scenario, silent) {
-            if (allScenarios.length >= MAX_SCENARIOS) {
-                if (!silent) alert('最多添加 ' + MAX_SCENARIOS + ' 个方案');
-                return;
-            }
-            var newScenario = scenario || { name: '方案 ' + (allScenarios.length + 1), principal: '0', rate: '6', period: 'annual', years: '20', add: '0', timing: 'end' };
-            allScenarios.push(newScenario);
-            renderScenarios();
         }
 
         function resetScenarios() {
@@ -728,7 +632,6 @@
             renderScenarios();
         }
 
-        addScenarioBtn.addEventListener('click', function () { addScenario(null, false); });
         resetBtn.addEventListener('click', resetScenarios);
         exampleBtn.addEventListener('click', function () {
             allScenarios = EXAMPLE_SCENARIOS.map(function (s) { return JSON.parse(JSON.stringify(s)); });
@@ -746,27 +649,22 @@
         function calculate() {
             if (!readScenariosFromUI()) return;
             var results = allScenarios.map(calculateScenario);
-            results.sort(function (a, b) { return b.finalAmount - a.finalAmount; });
+            document.getElementById('resultSection').style.display = 'block';
             renderSummaries(results);
             renderChart(results);
-            currentResults = results;
-            currentDetailIndex = 0;
-            renderDetailTabs(results);
             if (results[0]) renderTable(results[0]);
-            document.getElementById('resultSection').style.display = 'block';
             document.getElementById('resultSection').scrollIntoView({ behavior: 'smooth', block: 'start' });
         }
 
         function readScenariosFromUI() {
             var cards = scenarioList.querySelectorAll('.scenario-card');
             if (!cards.length) {
-                alert('请至少添加一个投资方案');
+                alert('请填写投资参数');
                 return false;
             }
             var valid = true;
             allScenarios = [];
             cards.forEach(function (card, index) {
-                var name = card.querySelector('.name-row input').value.trim() || ('方案 ' + (index + 1));
                 var fields = {
                     principal: card.querySelector('[id^="principal_"]'),
                     rate: card.querySelector('[id^="rate_"]'),
@@ -811,7 +709,6 @@
                     valid = false;
                 }
                 allScenarios.push({
-                    name: name,
                     principal: principalNum,
                     rate: rateNum,
                     years: yearsNum,
@@ -892,7 +789,42 @@
         }
 
         function formatMoney(value) {
-            return '¥' + Number(value).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+            var amount = Number(value);
+            var sign = amount < 0 ? '-' : '';
+            return sign + '¥' + Math.abs(amount).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+        }
+
+        function formatCompactNumber(value) {
+            return Number(value).toFixed(2)
+                .replace(/\.00$/, '')
+                .replace(/(\.\d)0$/, '$1')
+                .replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+        }
+
+        function formatDisplayAmount(value) {
+            var amount = Number(value);
+            var absolute = Math.abs(amount);
+            var sign = amount < 0 ? '-' : '';
+            if (absolute >= 100000000) {
+                return sign + formatCompactNumber(absolute / 100000000) + ' 亿元';
+            }
+            if (absolute >= 10000) {
+                return sign + formatCompactNumber(absolute / 10000) + ' 万元';
+            }
+            return formatMoney(amount);
+        }
+
+        function formatWanValue(value) {
+            return (Number(value) / 10000).toFixed(2);
+        }
+
+        function amountMarkup(value) {
+            var amount = Number(value);
+            var html = '<b title="' + formatMoney(amount) + '">' + formatDisplayAmount(amount);
+            if (Math.abs(amount) >= 10000) {
+                html += '<span class="exact-value">' + formatMoney(amount) + '</span>';
+            }
+            return html + '</b>';
         }
 
         function renderSummaries(results) {
@@ -905,15 +837,17 @@
                 item.className = 'scenario-summary';
                 var netEarnings = result.totalEarnings2;
                 item.innerHTML =
-                    '<div class="name">' + escapeHtml(result.config.name) + '</div>' +
-                    '<div class="minor-row"><span>总投入</span><b>' + formatMoney(result.totalInvested) + '</b></div>' +
-                    '<div class="minor-row"><span>总收益</span><b>' + formatMoney(netEarnings) + '</b></div>' +
+                    '<div class="minor-row"><span>总投入</span>' + amountMarkup(result.totalInvested) + '</div>' +
+                    '<div class="minor-row"><span>总收益</span>' + amountMarkup(netEarnings) + '</div>' +
                     '<div class="minor-row"><span>收益占比</span><b>' + (result.totalInvested > 0 ? netEarnings / result.totalInvested * 100 : 0).toFixed(1) + '%</b></div>' +
-                    '<div class="final">最终总金额<b>' + formatMoney(result.finalAmount) + '</b></div>';
+                    '<div class="final">最终总金额<b title="' + formatMoney(result.finalAmount) + '">' +
+                        formatDisplayAmount(result.finalAmount) +
+                        '<span class="exact-value">' + formatMoney(result.finalAmount) + '</span></b></div>';
                 grid.appendChild(item);
             });
             container.appendChild(grid);
-            document.getElementById('resultHint').textContent = results.length > 1 ? results.length + ' 个方案对比' : '单方案结果';
+            document.getElementById('resultHint').textContent = '单方案结果';
+            document.getElementById('detailHint').textContent = '共 ' + results[0].config.years + ' 年';
         }
 
         function renderChart(results) {
@@ -937,7 +871,7 @@
                 r.rows.forEach(function (row) {
                     points.push({ year: row.period, value: row.endAmount });
                 });
-                return { config: r.config, points: points };
+                return { points: points };
             });
             var maxValue = 0;
             series.forEach(function (s) {
@@ -946,7 +880,7 @@
                 });
             });
             maxValue = maxValue || 1;
-            var chartColors = ['#667eea', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6'];
+            var chartColor = '#d97706';
             ctx.clearRect(0, 0, width, height);
             var xFor = function (year) {
                 return paddingLeft + (year / maxYears) * (width - paddingLeft - paddingRight);
@@ -968,9 +902,8 @@
                 ctx.textAlign = 'center';
                 ctx.fillText(yr + '年', x, height - paddingBottom + 18);
             }
-            series.forEach(function (s, idx) {
-                var color = chartColors[idx % chartColors.length];
-                ctx.strokeStyle = color;
+            series.forEach(function (s) {
+                ctx.strokeStyle = chartColor;
                 ctx.lineWidth = 2;
                 ctx.beginPath();
                 s.points.forEach(function (p, i2) {
@@ -983,13 +916,10 @@
             });
             var legend = document.getElementById('chartLegend');
             legend.innerHTML = '';
-            series.forEach(function (s, idx) {
-                var color = chartColors[idx % chartColors.length];
-                var item = document.createElement('div');
-                item.className = 'legend-item';
-                item.innerHTML = '<span class="legend-dot" style="background:' + color + '"></span><span>' + escapeHtml(s.config.name) + '</span>';
-                legend.appendChild(item);
-            });
+            var item = document.createElement('div');
+            item.className = 'legend-item';
+            item.innerHTML = '<span class="legend-dot" style="background:' + chartColor + '"></span><span>账户余额</span>';
+            legend.appendChild(item);
         }
 
         function renderTable(result) {
@@ -1000,31 +930,11 @@
                 var label = '第 ' + row.period + ' 年';
                 tr.innerHTML =
                     '<td>' + label + '</td>' +
-                    '<td>' + formatMoney(row.startAmount) + '</td>' +
-                    '<td>' + formatMoney(row.earnings) + '</td>' +
-                    '<td>' + formatMoney(row.add) + '</td>' +
-                    '<td>' + formatMoney(row.endAmount) + '</td>';
+                    '<td title="' + formatMoney(row.startAmount) + '">' + formatWanValue(row.startAmount) + '</td>' +
+                    '<td title="' + formatMoney(row.earnings) + '">' + formatWanValue(row.earnings) + '</td>' +
+                    '<td title="' + formatMoney(row.add) + '">' + formatWanValue(row.add) + '</td>' +
+                    '<td title="' + formatMoney(row.endAmount) + '">' + formatWanValue(row.endAmount) + '</td>';
                 tbody.appendChild(tr);
-            });
-        }
-
-        function renderDetailTabs(results) {
-            var tabs = document.getElementById('detailTabs');
-            tabs.innerHTML = '';
-            results.forEach(function (result, index) {
-                var button = document.createElement('button');
-                button.type = 'button';
-                button.className = 'detail-tab' + (index === currentDetailIndex ? ' active' : '');
-                button.textContent = result.config.name || ('方案 ' + (index + 1));
-                button.addEventListener('click', function () {
-                    currentDetailIndex = index;
-                    var allButtons = tabs.querySelectorAll('.detail-tab');
-                    allButtons.forEach(function (btn, btnIndex) {
-                        btn.className = 'detail-tab' + (btnIndex === currentDetailIndex ? ' active' : '');
-                    });
-                    renderTable(results[currentDetailIndex]);
-                });
-                tabs.appendChild(button);
             });
         }
 
@@ -1032,11 +942,10 @@
             if (!readScenariosFromUI()) return;
             var results = allScenarios.map(calculateScenario);
             if (!results.length) return;
-            var rows = [['方案', '年份', '年初金额', '当年收益', '当期追加', '期末金额']];
+            var rows = [['年份', '年初金额', '当年收益', '当期追加', '期末金额']];
             results.forEach(function (r) {
-                var scenarioName = String(r.config.name).replace(/"/g, '""');
                 r.rows.forEach(function (row) {
-                    rows.push(['"' + scenarioName + '"', row.period, row.startAmount.toFixed(2), row.earnings.toFixed(2), row.add.toFixed(2), row.endAmount.toFixed(2)]);
+                    rows.push([row.period, row.startAmount.toFixed(2), row.earnings.toFixed(2), row.add.toFixed(2), row.endAmount.toFixed(2)]);
                 });
             });
             var csv = '\ufeff' + rows.map(function (line) { return line.join(','); }).join('\n');
@@ -1048,12 +957,6 @@
             link.click();
             document.body.removeChild(link);
             URL.revokeObjectURL(link.href);
-        }
-
-        function escapeHtml(str) {
-            return String(str).replace(/[&<>"']/g, function (c) {
-                return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
-            });
         }
 
         resetScenarios();
